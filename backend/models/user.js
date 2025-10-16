@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema({
         minlength: 3,
     },
     passwordHash: String,
+    role: String,
     timestamps: true,
     // will not embed an array of journal entries to prevent performance and scalability issues
 })

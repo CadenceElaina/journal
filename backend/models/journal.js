@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const journalSchema = new mongoose.Schema({
+    isShared: Boolean,
     title: {
         type: String,
         required: true,
@@ -14,7 +15,7 @@ const journalSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
-    mood: {
+    moods: {
         type: String,
         trim: true,
     },
