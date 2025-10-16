@@ -1,78 +1,106 @@
 const journalsRouter = require('express').Router()
 const Journal = require('../models/journal')
 const User = require('../models/user')
-const jwt = require('jsonwebtoken')
-const middleware = require('../utils/middleware')
-const config = require('../utils/config')
 
-journalsRouter.get('/', async (request, response) => {
-    const journals = await Journal.find({}).populate('user', {username: 1, name: 1})
-    response.json(journals)
-})
-
-journalsRouter.get('/:id', async (request, response) => {
-    const journal = await Journal.findById(request.params.id)
-    if(journal) {
-        response.json(journal)
-    } else {
-        response.status(404).end()
+journalsRouter.get('/', async (request, response, next) => {
+    try {
+        const journals = await Journal.find({}).populate('user', {username: 1, name: 1})
+        response.json(journals)
+    } catch (error) {
+        next(error)
     }
 })
 
-journalsRouter.post('/', async (request, response) => {
-    const body = request.body
-    const user = request.user
-    const token = request.token
-
-    const decodedToken = jwt.verify(token, config.SECRET)
-    if(!(token && decodedToken.id)) {
-        return response.status(401).json({error: "token missing or invalid"})
+journalsRouter.get('/:id', async (request, response, next) => {
+    try {
+        const journal = await Journal.findById(request.params.id)
+        if (journal) {
+            response.json(journal)
+        } else {
+            response.status(404).end()
+        }
+    } catch (error) {
+        next(error)
     }
-
-    const journal = new Journal({
-        title: body.title,
-        content: body.content,
-        tags: body.tags,
-        moods: body.moods,
-        user: user._id
-    })
-
-    const savedJournal = await journal.save()
-
-    response.json(savedJournal)
 })
 
-journalsRouter.delete('/:id', async (request, response) => {
-    const token = request.token
-    const decodedToken = jwt.verify(token, config.SECRET)
-    if(!(token && decodedToken.id)) {
-        return response.status(401).json({error: "token missing or invalide"})
+journalsRouter.post('/', async (request, response, next) => {
+    try {
+        if (!request.user) {
+            return response.status(401).json({error: "token missing or invalid"})
+        }
+
+        const journal = new Journal({
+            title: request.body.title,
+            content: request.body.content,
+            tags: request.body.tags,
+            mood: request.body.mood,
+            user: request.user._id
+        })
+
+        const savedJournal = await journal.save()
+        response.json(savedJournal)
+    } catch (error) {
+        next(error)
     }
-
-    const id = request.params.id
-    const journal = await Journal.findById(id)
-
-    //check if author/user matches journal author ? then delete else unauthorized
-    //in fullstackopen the user has their journals embeded to be able to check if they are author but here we need to check somehow?
-
 })
 
-journalsRouter.put('/:id', (request, response, next) => {
-    const body = request.body
+journalsRouter.delete('/:id', async (request, response, next) => {
+    try {
+        if (!request.user) {
+            return response.status(401).json({error: "token missing or invalid"})
+        }
+        
+        const journal = await Journal.findById(request.params.id)
 
-    const journal = {
-        title: body.title,
-        content: body.content,
-        tags: body.tags,
-        moods: body.moods,
-       // user: user._id //is this needed? 
+        if (!journal) {
+            return response.status(404).json({error: "Journal entry not found"})
+        }
+
+        if (journal.user.toString() !== request.user._id.toString()) {
+            return response.status(401).json({error: "unauthorized operation"})
+        }
+
+        await Journal.deleteOne({ _id: request.params.id })
+        response.sendStatus(204)
+    } catch (error) {
+        next(error)
     }
+})
 
-    Journal.findByIdAndUpdate(request.params.id, journal, {new: true})
-    .then(updatedJournal => {
-        response.json(updatedJournal)
-    })
-    .catch(error => next(error))
+journalsRouter.put('/:id', async (request, response, next) => {
+    try {
+        if (!request.user) {
+            return response.status(401).json({error: "token missing or invalid"})
+        }
+
+        const journal = await Journal.findById(request.params.id)
+        
+        if (!journal) {
+            return response.status(404).json({error: "Journal entry not found"})
+        }
+
+        if (journal.user.toString() !== request.user._id.toString()) {
+            return response.status(401).json({error: "unauthorized operation"})
+        }
+
+        const updatedJournal = {
+            title: request.body.title,
+            content: request.body.content,
+            tags: request.body.tags,
+            mood: request.body.mood
+        }
+
+        const result = await Journal.findByIdAndUpdate(
+            request.params.id, 
+            updatedJournal, 
+            { new: true, runValidators: true }
+        )
+
+        response.json(result)
+    } catch (error) {
+        next(error)
+    }
 })
 
 module.exports = journalsRouter

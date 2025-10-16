@@ -11,9 +11,11 @@ const userSchema = mongoose.Schema({
     },
     passwordHash: String,
     role: String,
-    timestamps: true,
-    // will not embed an array of journal entries to prevent performance and scalability issues
+}, { 
+    timestamps: true 
 })
+
+// will not embed an array of journal entries to prevent performance and scalability issues
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
