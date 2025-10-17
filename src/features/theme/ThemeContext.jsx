@@ -6,7 +6,7 @@ const ThemeContext = createContext();
 
 // 2. Create the Provider component
 export const ThemeProvider = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState("light");
+  const [currentTheme, setCurrentTheme] = useState("leather-bound");
   const theme = themes[currentTheme];
 
   // Apply CSS variables when theme changes

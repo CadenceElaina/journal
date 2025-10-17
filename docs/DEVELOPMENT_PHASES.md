@@ -22,6 +22,8 @@
 
 ### Frontend: ⏳ NOT STARTED
 
+- [ ] Landing page with demo option
+- [ ] Demo session system (isolated sessions with cleanup)
 - [ ] Basic styling
 - [ ] Authentication UI (Login/Register forms)
 - [ ] Journal entry forms (Create/Edit)
@@ -49,12 +51,29 @@
 
 ### Current Frontend Tasks:
 
+**Phase 1.5: Demo System (New Priority)**
+
+- [ ] Backend: Update User model with demo fields
+- [ ] Backend: Create demo session endpoint
+- [ ] Backend: Implement seed demo data
+- [ ] Backend: Create cleanup service with cron job
+- [ ] Backend: Add activity tracking middleware
+- [ ] Frontend: Create Landing/Welcome page
+- [ ] Frontend: Implement demo session UI
+- [ ] Frontend: Add session expiration handling
+- [ ] Test isolated demo sessions
+- [ ] Test cleanup system
+
+**Phase 1: Core Frontend (After Demo)**
+
 - [ ] Set up React components structure
 - [ ] Create authentication UI (Login/Register)
 - [ ] Create journal entry form
 - [ ] Display journal list with pagination
 - [ ] Implement search/filter UI
 - [ ] Add basic styling
+
+**📄 See DEMO_SYSTEM_REQUIREMENTS.md for detailed specifications**
 
 ---
 
@@ -197,10 +216,11 @@
 
 ## Timeline Estimate
 
-- **Phase 1:** 2-3 weeks (learning + implementation)
+- **Phase 1.5:** 0.5-1 week (demo system - backend + frontend)
+- **Phase 1:** 2-3 weeks (core frontend + auth)
 - **Phase 2:** 1 week (testing + polish)
 - **Phase 3:** 2-3 weeks (choose 2-3 features)
-- **Phase 4:** 3-4 weeks (complex features)
+- **Phase 4:** 3-4 weeks (complex features + role-based demos)
 
 **Total MVP (Phases 1-3):** 5-7 weeks
 **Full Project (All Phases):** 8-12 weeks

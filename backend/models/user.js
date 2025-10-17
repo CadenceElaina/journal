@@ -11,11 +11,15 @@ const userSchema = mongoose.Schema({
     },
     passwordHash: String,
     role: String,
+    isDemo: {type: Boolean, default: false},
+    lastActivity: {type: Date, default: Date.now},
 }, { 
     timestamps: true 
 })
 
 // will not embed an array of journal entries to prevent performance and scalability issues
+
+userSchema.index({ isDemo: 1, lastActivity: 1}) // tells MongoDB to create a database-level index to speed up queries - sorted index on these fields for lookups - instead of searching entire phone book search by alphabetical tabs 
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
