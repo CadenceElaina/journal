@@ -18,9 +18,13 @@ const journalSchema = new mongoose.Schema({
         type: [String],
         default: []
     },
-    mood: {
-        type: String,
+    moods: {
+        type: [String],
         trim: true,
+    },
+    wordCount: {
+        type: Number,
+        required: true,
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -30,8 +34,10 @@ const journalSchema = new mongoose.Schema({
 },
     {
         timestamps: true, //handles createdAt and updatedAt fields 
-    }
+    },
 )
+
+    journalSchema.index({ title: 'text', content: 'text' })
 
 journalSchema.set('toJSON', {
     transform: (document, returnedObject) => {

@@ -55,8 +55,8 @@ const userExtractor = async (request, response, next) => {
     request.user = user
   }
 } catch (error) {
-    console.error(error)
-    response.status(500).json({message: 'Server error'})
+    next(error)
+    return
 }
   next()
 }

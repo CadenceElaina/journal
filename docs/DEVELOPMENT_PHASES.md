@@ -1,37 +1,60 @@
 # Journal App Development Phases
 
-## Phase 1: Core MVP ✅ (In Progress)
+## Phase 1: Core MVP
 
 **Goal:** Build a functional personal journal app with authentication
 
-### Features:
+### Backend: ✅ COMPLETE & PRODUCTION READY
 
 - ✅ User registration and login (JWT authentication)
-- ✅ CRUD operations for journal entries
-- ✅ Basic validation
-- ✅ Tags for journal entries
-- ✅ Mood tracking
-- 🔄 Filter journals by date
-- 🔄 Search journals by content/title
-- 🔄 Basic styling (frontend)
+- ✅ Full CRUD operations for journal entries
+- ✅ Comprehensive validation (schema + auth)
+- ✅ Tags for journal entries (array support, filter by multiple)
+- ✅ Mood tracking (array support, multiple moods per entry)
+- ✅ Filter journals by date (exact date + date ranges)
+- ✅ Search journals by text (MongoDB text search on title/content)
+- ✅ Advanced features:
+  - 6 sort options (newest, oldest, edited, alphabetical, word count)
+  - Pagination (page/limit support)
+  - Word count tracking (auto-calculated)
+  - User isolation (security - users only see their journals)
+  - Ownership verification (can only edit/delete own entries)
+
+### Frontend: ⏳ NOT STARTED
+
+- [ ] Basic styling
+- [ ] Authentication UI (Login/Register forms)
+- [ ] Journal entry forms (Create/Edit)
+- [ ] Display journal list with pagination
+- [ ] Search/filter interface
+- [ ] Responsive design
 
 ### Tech Stack:
 
-- Backend: Node.js, Express, MongoDB, Mongoose
-- Frontend: React, Vite
-- Auth: JWT, bcrypt
+- Backend: Node.js, Express v5, MongoDB, Mongoose, JWT, bcrypt ✅
+- Frontend: React, Vite ⏳
 
-### Current Tasks:
+### Backend Completed Tasks:
 
-- [ ] Fix User model timestamps placement
-- [ ] Add missing imports to middleware.js (jwt, User)
-- [ ] Add SECRET to config.js
-- [ ] Complete DELETE journal logic (authorization check)
-- [ ] Fix mood field name (singular vs plural)
-- [ ] Implement search functionality
-- [ ] Implement date filtering
-- [ ] Add error handling with try-catch blocks
-- [ ] Test all endpoints
+- [x] All models properly configured
+- [x] All middleware implemented and tested
+- [x] Full CRUD with authentication
+- [x] Advanced search/filter/sort/pagination
+- [x] Security: user isolation and ownership checks
+- [x] Error handling with centralized middleware
+- [x] Text indexes for fast search
+- [x] Word count auto-calculation
+
+**📄 See BACKEND_STATUS.md for detailed API documentation**
+
+### Current Frontend Tasks:
+
+- [ ] Set up React components structure
+- [ ] Create authentication UI (Login/Register)
+- [ ] Create journal entry form
+- [ ] Display journal list with pagination
+- [ ] Implement search/filter UI
+- [ ] Add basic styling
 
 ---
 
