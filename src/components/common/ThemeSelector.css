@@ -1,0 +1,130 @@
+.theme-selector {
+  position: relative;
+  display: inline-block;
+}
+
+.theme-selector-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.theme-selector-button:hover {
+  background-color: var(--button-secondary-bg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.theme-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.theme-name {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dropdown-arrow {
+  font-size: 0.625rem;
+  margin-left: 0.25rem;
+  transition: transform 0.2s ease;
+  color: var(--text-secondary);
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.theme-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 180px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 0.5rem;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  position: relative;
+}
+
+.theme-option:hover {
+  background-color: var(--button-secondary-bg);
+}
+
+.theme-option.active {
+  background-color: var(--button-secondary-bg);
+}
+
+.theme-option-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.theme-option-name {
+  flex-grow: 1;
+  font-weight: 500;
+}
+
+.checkmark {
+  color: var(--accent);
+  font-weight: bold;
+  font-size: 1rem;
+  margin-left: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .theme-selector-button {
+    padding: 0.375rem 0.625rem;
+  }
+
+  .theme-name {
+    display: none;
+  }
+
+  .theme-dropdown {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
