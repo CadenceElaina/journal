@@ -332,13 +332,14 @@ DEMO_WARNING_TIME=5       # Minutes before expiration to warn user
 
 **Estimated Time: 2-3 hours**
 
-- [ ] Update User model with demo fields
-- [ ] Create demo creation endpoint
-- [ ] Seed demo data function
-- [ ] Create cleanup service
-- [ ] Add activity tracking middleware
-- [ ] Test demo creation
-- [ ] Test cleanup job
+- [x] Update User model with demo fields (isDemo, lastActivity, compound index)
+- [x] Create demo creation endpoint (POST /api/demo with unique username generation)
+- [x] Seed demo data function (5 sample journals with varied dates)
+- [x] Create cleanup service (finds expired demos, deletes journals then users)
+- [x] Schedule cleanup with node-cron (every 15 minutes after DB connection)
+- [ ] Add activity tracking middleware (update lastActivity on each request)
+- [ ] Test demo creation endpoint
+- [ ] Test cleanup job (with short duration for testing)
 
 ### Phase 1.5b: Frontend Demo UI (Second)
 

@@ -1,8 +1,8 @@
 const User = require("../models/user");
 const Journal = require("../models/journal");
+const DEMO_DURATION = 30 * 60 * 1000; // 30 minutes
 
 async function cleanUpExpiredDemos() {
-  const DEMO_DURATION = 30 * 60 * 1000; // 30 minutes
   const expiredTime = Date.now() - DEMO_DURATION;
 
   try {
@@ -30,4 +30,4 @@ async function cleanUpExpiredDemos() {
   }
 }
 
-module.exports = cleanUpExpiredDemos;
+module.exports = { cleanUpExpiredDemos, DEMO_DURATION };

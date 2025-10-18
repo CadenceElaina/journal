@@ -6,22 +6,18 @@ const config = require("../utils/config");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const demoJournalEntries = require("../utils/demoJournalData");
-const cleanUpExpiredDemos = require("../utils/demoCleanup");
+const crypto = require("crypto");
+const demoCleanup = require("../utils/demoCleanup");
 
-demoRouter.get("/", async (request, response, next) => {
+demoRouter.post("/", async (request, response, next) => {
   try {
     //generate unique username
     function generateUniqueUsername() {
       let randomInt = Math.random() * 999999;
-      let username = `demo_${Date.now}+${randomInt}`;
-      return username;
+      let demoUsername = `demo_${Date.now()}+${randomInt}`;
+      return demoUsername;
     }
-    let demoUsername = generateUniqueUsername();
-    let existingUser = await User.findOne({ demoUsername });
-    while (existingUser) {
-      demoUsername = generateUniqueUsername();
-      existingUser = await User.findOne({ demoUsername });
-    }
+    let username = generateUniqueUsername();
 
     //generate secure random password
     const length = 10;
@@ -38,46 +34,25 @@ demoRouter.get("/", async (request, response, next) => {
 
     //create demo user
     const user = new User({
-      demoUsername,
+      username,
       passwordHash,
+      isDemo: true,
     });
     const savedDemoUser = await user.save();
 
-    const wordCount = [];
-    wordCount
-      .push(
-        demoJournalEntries.map((entry, i) => {
-          entry.content.split(/\s+/);
-        })
-      )
-      .split(/\s+/)
-      .filter((word) => word.length > 0).length;
+    const journalsToInsert = demoJournalEntries.map((entry) => ({
+      title: entry.title,
+      content: entry.content,
+      tags: entry.tags,
+      moods: entry.moods,
+      user: savedDemoUser._id,
+      wordCount: entry.wordCount,
+    }));
 
-    const journal = demoJournalEntries.map((entry, i) => {
-      new Journal({
-        title: entry.title,
-        content: entry.content,
-        tags: entry.tags,
-        moods: entry.moods,
-        user: savedDemoUser._id,
-        wordCount: wordCount,
-      });
-    });
-
-    const savedJournal = await journal.save();
+    const savedJournals = await Journal.insertMany(journalsToInsert);
+    console.log(`${savedJournals.length} journals were successfully saved.`);
 
     //generate JWT token
-    const passwordCorrect =
-      savedDemoUser === null
-        ? false
-        : await bcrypt.compare(password, savedDemoUser.passwordHash);
-
-    if (!(savedDemoUser && passwordCorrect)) {
-      return response.status(401).json({
-        error: "invalid username or password",
-      });
-    }
-
     const userForToken = {
       username: savedDemoUser.username,
       id: savedDemoUser._id,
@@ -86,13 +61,17 @@ demoRouter.get("/", async (request, response, next) => {
     const token = jwt.sign(userForToken, config.SECRET, {
       expiresIn: 60 * 60,
     });
-    cleanUpExpiredDemos();
-    response
-      .status(200)
-      .send({ token, name: user.name, username: user.username });
+
+    response.status(200).send({
+      token,
+      user: savedDemoUser,
+      username: user.username,
+      remainingMs: demoCleanup.DEMO_DURATION,
+    });
     //return token + remaining time
-    response.status(201).json(savedDemoUser);
   } catch (error) {
     next(error);
   }
 });
+
+module.exports = demoRouter;
