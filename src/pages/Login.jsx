@@ -1,9 +1,12 @@
 import React from "react";
+import LoginForm from "../features/auth/LoginForm";
 
 const Login = () => {
   return (
     <>
-      <div>login</div>
+      <div>
+        login <LoginForm />
+      </div>
     </>
   );
 };
