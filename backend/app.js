@@ -9,6 +9,7 @@ const middleware = require("./utils/middleware");
 const demoCleanup = require("./utils/demoCleanup");
 
 const loginRouter = require("./controllers/login");
+const authRouter = require("./controllers/auth");
 const journalsRouter = require("./controllers/journals");
 const usersRouter = require("./controllers/users");
 const demoRouter = require("./controllers/demo");
@@ -39,7 +40,13 @@ app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
 
 app.use("/api/login", loginRouter);
-app.use("/api/journals", middleware.userExtractor, journalsRouter);
+app.use("/api/auth", authRouter);
+app.use(
+  "/api/journals",
+  middleware.userExtractor,
+  middleware.demoActivityTracker,
+  journalsRouter
+);
 app.use("/api/users", usersRouter);
 app.use("/api/demo", demoRouter);
 

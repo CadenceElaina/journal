@@ -62,8 +62,17 @@ demoRouter.post("/", async (request, response, next) => {
       expiresIn: 60 * 60,
     });
 
+    const refreshToken = jwt.sign(userForToken, config.REFRESH_SECRET, {
+      expiresIn: 60 * 60 * 24 * 7,
+    });
+
+    // Save refresh token to database
+    user.refreshToken = refreshToken;
+    await user.save();
+
     response.status(200).send({
       token,
+      refreshToken,
       user: savedDemoUser,
       username: user.username,
       remainingMs: demoCleanup.DEMO_DURATION,
