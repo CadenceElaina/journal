@@ -10,6 +10,13 @@ const userSchema = mongoose.Schema(
       unique: true,
       minlength: 3,
     },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+      minlength: 9 // a@aol.com
+    }
     passwordHash: String,
     role: String,
     refreshToken: String,

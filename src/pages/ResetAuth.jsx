@@ -1,9 +1,10 @@
 import React from "react";
-
+import ResetAuthForm from "../features/auth/ResetAuthForm";
 const ResetAuth = () => {
   return (
     <div>
-      <h2>Forgot Password?</h2>
+      ResetAuth
+      <ResetAuthForm />
     </div>
   );
 };

@@ -7,18 +7,23 @@
 ### Backend: ✅ COMPLETE & PRODUCTION READY
 
 - ✅ User registration and login (JWT authentication)
+- ✅ Password reset system (email-based with 6-char codes)
+- ✅ Refresh token system (7-day tokens, auto-renewal)
 - ✅ Full CRUD operations for journal entries
 - ✅ Comprehensive validation (schema + auth)
 - ✅ Tags for journal entries (array support, filter by multiple)
 - ✅ Mood tracking (array support, multiple moods per entry)
 - ✅ Filter journals by date (exact date + date ranges)
 - ✅ Search journals by text (MongoDB text search on title/content)
+- ✅ Demo system (isolated sessions, auto-cleanup, activity tracking)
 - ✅ Advanced features:
   - 6 sort options (newest, oldest, edited, alphabetical, word count)
   - Pagination (page/limit support)
   - Word count tracking (auto-calculated)
   - User isolation (security - users only see their journals)
   - Ownership verification (can only edit/delete own entries)
+  - Rate limiting (3 password reset requests per day)
+  - Email service (nodemailer with Gmail SMTP)
 
 ### Frontend: ⏳ NOT STARTED
 
@@ -38,7 +43,7 @@
 
 ### Backend Completed Tasks:
 
-- [x] All models properly configured
+- [x] All models properly configured (User, Journal, PasswordReset)
 - [x] All middleware implemented and tested
 - [x] Full CRUD with authentication
 - [x] Advanced search/filter/sort/pagination
@@ -46,6 +51,12 @@
 - [x] Error handling with centralized middleware
 - [x] Text indexes for fast search
 - [x] Word count auto-calculation
+- [x] Refresh token system with auto-renewal
+- [x] Password reset with email verification
+- [x] Demo system with isolated sessions and cleanup
+- [x] Activity tracking for demo users
+- [x] Rate limiting for password resets
+- [x] TTL indexes for automatic cleanup
 
 **📄 See BACKEND_STATUS.md for detailed API documentation**
 
@@ -53,21 +64,39 @@
 
 **Phase 1.5: Demo System (New Priority)**
 
-- [ ] Backend: Update User model with demo fields
-- [ ] Backend: Create demo session endpoint
-- [ ] Backend: Implement seed demo data
-- [ ] Backend: Create cleanup service with cron job
-- [ ] Backend: Add activity tracking middleware
+- [x] Backend: Update User model with demo fields
+- [x] Backend: Create demo session endpoint
+- [x] Backend: Implement seed demo data
+- [x] Backend: Create cleanup service with cron job
+- [x] Backend: Add activity tracking middleware
+- [x] Backend: Refresh token system
 - [ ] Frontend: Create Landing/Welcome page
 - [ ] Frontend: Implement demo session UI
 - [ ] Frontend: Add session expiration handling
-- [ ] Test isolated demo sessions
-- [ ] Test cleanup system
+- [ ] Test isolated demo sessions (frontend)
+- [ ] Test cleanup system (frontend integration)
+
+**Phase 1.6: Password Reset (COMPLETE)**
+
+- [x] Backend: PasswordReset model with TTL index
+- [x] Backend: Email service setup (nodemailer + Gmail)
+- [x] Backend: POST /api/auth/forgot-password/request
+- [x] Backend: POST /api/password-reset/verify
+- [x] Backend: POST /api/password-reset/reset
+- [x] Backend: Rate limiting (3 requests/day per email)
+- [x] Backend: Code expiration (15 minutes)
+- [x] Backend: Failed attempt tracking (max 5)
+- [ ] Frontend: Multi-step reset form
+- [ ] Frontend: Code input UI
+- [ ] Frontend: New password form
+- [ ] Test email delivery
+- [ ] Test full reset flow
 
 **Phase 1: Core Frontend (After Demo)**
 
 - [ ] Set up React components structure
 - [ ] Create authentication UI (Login/Register)
+- [ ] Implement password reset UI flow
 - [ ] Create journal entry form
 - [ ] Display journal list with pagination
 - [ ] Implement search/filter UI

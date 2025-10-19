@@ -53,7 +53,7 @@ const LoginForm = () => {
         <button type="submit" disabled={isLoading} className="form-submit">
           {isLoading ? "Logging in..." : "Login"}
         </button>
-        <Link to={"/forgot"}>Forgot password?</Link>
+        <Link to="/reset">Forgot password?</Link>
       </form>
     </div>
   );

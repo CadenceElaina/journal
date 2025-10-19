@@ -6,7 +6,7 @@ const Home = () => {
   const [auth, setAuth] = useState(false);
   return (
     <>
-      <Header />
+      dashboard
       <div>{!auth && <Login />}</div>
     </>
   );
