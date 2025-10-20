@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useAuth } from "./context/AuthContext";
 
 const ResetAuth = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -78,16 +80,16 @@ const ResetAuth = () => {
             </>
           )}
         </div>
-        <button>Demo Login</button>
+        <Link to={"/"} onClick={handleDemoLogin}>Demo Login</button>
 
         <button type="submit" disabled={isLoading} className="form-submit">
           {isLoading && !showReset
             ? "Sending reset email..."
             : isLoading && showReset
             ? "Saving..."
-            : "Reset"}
+            : "Send"}
         </button>
-        <Link to={"/login"}>Login</Link>
+        <Link to={"/"}>Login</Link>
       </form>
     </div>
   );

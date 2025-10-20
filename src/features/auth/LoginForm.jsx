@@ -1,12 +1,18 @@
 import React from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
+import { useForm } from "./hooks/useForm";
 
 const LoginForm = () => {
   //notifications todo
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ username: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const { login, loginAsDemo } = useAuth(); // Get the functions from context
+  const navigate = useNavigate();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -16,11 +22,26 @@ const LoginForm = () => {
   function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
+    setError(null);
 
-    //api service login
-
-    //handle success/fail & notify & route
+    try {
+      //await login(formData)
+      //success notification
+      navigate("/");
+    } catch (error) {
+      setError(error.message || "Failed to login.");
+      //fail notificaiton
+    } finally {
+      setIsLoading(false);
+    }
   }
+
+  function handleDemoLogin() {
+    loginAsDemo();
+    //logged in as - generate random funny name / username to show in header for demo user
+    navigate("/");
+  }
+
   return (
     <div className="login-form-container">
       <form onSubmit={handleSubmit}>
@@ -48,7 +69,9 @@ const LoginForm = () => {
           />
         </div>
 
-        <button>Demo Login</button>
+        <button type="button" onClick={handleDemoLogin} className="demo-button">
+          Continue as Demo User
+        </button>
 
         <button type="submit" disabled={isLoading} className="form-submit">
           {isLoading ? "Logging in..." : "Login"}

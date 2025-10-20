@@ -15,8 +15,8 @@ const userSchema = mongoose.Schema(
       required: true,
       trim: true,
       unique: true,
-      minlength: 9 // a@aol.com
-    }
+      minlength: 9, // a@aol.com - 9 min? what other site is less than 3 ig .io exists etc
+    },
     passwordHash: String,
     role: String,
     refreshToken: String,

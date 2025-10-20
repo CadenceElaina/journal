@@ -8,7 +8,6 @@ const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
 const demoCleanup = require("./utils/demoCleanup");
 
-const loginRouter = require("./controllers/login");
 const authRouter = require("./controllers/auth");
 const journalsRouter = require("./controllers/journals");
 const usersRouter = require("./controllers/users");
@@ -39,7 +38,6 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
 
-app.use("/api/login", loginRouter);
 app.use("/api/auth", authRouter);
 app.use(
   "/api/journals",

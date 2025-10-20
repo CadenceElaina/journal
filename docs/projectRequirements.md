@@ -9,7 +9,8 @@ filter by date
 search entries
 basic styling
 
-sorting: User Story: "I want to find all my entries from my travel to Japan last year where I felt excited."
+sorting: 
+User Story: "I want to find all my entries from my travel to Japan last year where I felt excited."
 
 Tags: travel
 
