@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import Header from "../components/common/Header";
 import Login from "./Login";
+import { useAuth } from "../features/auth/context/AuthContext";
 
 const Home = () => {
-  const [auth, setAuth] = useState(false);
+  const { status } = useAuth(); // Add () to call the hook
+
   return (
     <>
       dashboard
-      <div>{!auth && <Login />}</div>
+      <div>{status === "loggedOut" && <Login />}</div>
     </>
   );
 };

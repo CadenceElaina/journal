@@ -1,4 +1,3 @@
-const journalsRouter = require("express").Router();
 const Journal = require("../models/journal");
 const User = require("../models/user");
 const demoRouter = require("express").Router();
@@ -35,6 +34,7 @@ demoRouter.post("/", async (request, response, next) => {
     //create demo user
     const user = new User({
       username,
+      email: `${username}@demo.temp`, // Add fake email for demo users
       passwordHash,
       isDemo: true,
     });

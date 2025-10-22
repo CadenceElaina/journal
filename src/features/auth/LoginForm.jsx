@@ -19,27 +19,34 @@ const LoginForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
 
-    try {
-      //await login(formData)
-      //success notification
+    const result = await login(formData); // Pass whole object {username, password}
+
+    setIsLoading(false);
+
+    if (result.success) {
+      //success notification (optional)
       navigate("/");
-    } catch (error) {
-      setError(error.message || "Failed to login.");
-      //fail notificaiton
-    } finally {
-      setIsLoading(false);
+    } else {
+      setError(result.error);
+      //fail notification (optional)
     }
   }
 
-  function handleDemoLogin() {
-    loginAsDemo();
+  async function handleDemoLogin() {
+    setIsLoading(true);
+    const result = await loginAsDemo();
     //logged in as - generate random funny name / username to show in header for demo user
-    navigate("/");
+    setIsLoading(false);
+    if (result.success) {
+      navigate("/");
+    } else {
+      setError(result.error);
+    }
   }
 
   return (
@@ -70,13 +77,14 @@ const LoginForm = () => {
         </div>
 
         <button type="button" onClick={handleDemoLogin} className="demo-button">
-          Continue as Demo User
+          Use Demo
         </button>
 
         <button type="submit" disabled={isLoading} className="form-submit">
           {isLoading ? "Logging in..." : "Login"}
         </button>
         <Link to="/reset">Forgot password?</Link>
+        <Link to="/signup">Sign Up</Link>
       </form>
     </div>
   );
