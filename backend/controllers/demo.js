@@ -37,6 +37,7 @@ demoRouter.post("/", async (request, response, next) => {
       email: `${username}@demo.temp`, // Add fake email for demo users
       passwordHash,
       isDemo: true,
+      isEmailVerified: true, // Demo users don't need email verification
     });
     const savedDemoUser = await user.save();
 
@@ -75,6 +76,7 @@ demoRouter.post("/", async (request, response, next) => {
       refreshToken,
       user: savedDemoUser,
       username: user.username,
+      isEmailVerified: true,
       remainingMs: demoCleanup.DEMO_DURATION,
     });
     //return token + remaining time

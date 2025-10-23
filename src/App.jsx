@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import ResetAuth from "./pages/ResetAuth";
 import Layout from "./components/layout/Layout";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="reset" element={<ResetAuth />} />
+            <Route path="signup" element={<Signup />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>

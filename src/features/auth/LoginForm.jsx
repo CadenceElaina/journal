@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
-import { useForm } from "./hooks/useForm";
 
 const LoginForm = () => {
   //notifications todo
@@ -42,6 +41,7 @@ const LoginForm = () => {
     const result = await loginAsDemo();
     //logged in as - generate random funny name / username to show in header for demo user
     setIsLoading(false);
+
     if (result.success) {
       navigate("/");
     } else {

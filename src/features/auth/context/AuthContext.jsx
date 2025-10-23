@@ -37,6 +37,8 @@ export const AuthProvider = ({ children }) => {
       const userData = {
         name: data.name,
         username: data.username,
+        email: data.email,
+        isEmailVerified: data.isEmailVerified || false,
       };
 
       const tokenData = {
@@ -70,6 +72,8 @@ export const AuthProvider = ({ children }) => {
       const demoUserData = {
         username: data.username,
         name: "Demo User",
+        isEmailVerified: true, // Demo users are always verified
+        isDemo: true,
       };
 
       const tokenData = {
@@ -134,6 +138,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateEmailVerificationStatus = (isVerified) => {
+    if (user) {
+      const updatedUser = { ...user, isEmailVerified: isVerified };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
+  };
+
   const value = {
     user,
     status,
@@ -143,6 +155,7 @@ export const AuthProvider = ({ children }) => {
     loginAsDemo,
     logout,
     refresh,
+    updateEmailVerificationStatus,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

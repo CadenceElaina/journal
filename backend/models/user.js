@@ -21,6 +21,7 @@ const userSchema = mongoose.Schema(
     role: String,
     refreshToken: String,
     isDemo: { type: Boolean, default: false },
+    isEmailVerified: { type: Boolean, default: false },
     lastActivity: { type: Date, default: Date.now },
   },
   {

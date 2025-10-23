@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const User = require("../models/user");
 const config = require("../utils/config");
-const sendEmail = require("../utils/mailer");
+const { sendEmail } = require("../utils/mailer");
 const PasswordReset = require("../models/passwordReset");
 
 // Login - authenticate user and return tokens
@@ -40,9 +40,14 @@ authRouter.post("/login", async (request, response, next) => {
     user.refreshToken = refreshToken;
     await user.save();
 
-    response
-      .status(200)
-      .send({ token, refreshToken, name: user.name, username: user.username });
+    response.status(200).send({
+      token,
+      refreshToken,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      isEmailVerified: user.isEmailVerified,
+    });
   } catch (error) {
     next(error);
   }

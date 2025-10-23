@@ -12,6 +12,7 @@ const authRouter = require("./controllers/auth");
 const journalsRouter = require("./controllers/journals");
 const usersRouter = require("./controllers/users");
 const demoRouter = require("./controllers/demo");
+const emailVerificationRouter = require("./controllers/emailVerification");
 
 // should mongoose be strictQuery or not?
 
@@ -47,6 +48,7 @@ app.use(
 );
 app.use("/api/users", usersRouter);
 app.use("/api/demo", demoRouter);
+app.use("/api/email-verification", emailVerificationRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
