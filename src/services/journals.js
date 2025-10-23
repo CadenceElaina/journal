@@ -40,7 +40,7 @@ const updateJournal = async (id, updatedJournal) => {
   return response.data;
 };
 
-const removeJournal = async (id) => {
+const deleteJournal = async (id) => {
   const config = {
     headers: { Authorization: token },
   };
@@ -54,5 +54,5 @@ export default {
   getJournalById,
   createJournal,
   updateJournal,
-  removeJournal,
+  deleteJournal,
 };

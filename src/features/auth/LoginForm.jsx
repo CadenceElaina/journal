@@ -18,6 +18,10 @@ const LoginForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
+  function handleCheckboxChange() {
+    setShowPassword(!showPassword);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setIsLoading(true);
@@ -56,6 +60,7 @@ const LoginForm = () => {
           <label htmlFor="username">Username:</label>
           <input
             name="username"
+            type="text"
             label="username"
             value={formData.username}
             onChange={handleChange}
@@ -68,11 +73,19 @@ const LoginForm = () => {
           <label htmlFor="password">Password:</label>
           <input
             name="password"
+            type={!showPassword ? "password" : "text"}
             label="password"
             value={formData.password}
             onChange={handleChange}
             className="form-input"
             required
+          />
+          <label htmlFor="show-password">Show:</label>
+          <input
+            name="show-password"
+            type="checkbox"
+            onChange={handleCheckboxChange}
+            className="form-input"
           />
         </div>
 

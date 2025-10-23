@@ -8,7 +8,6 @@ import {
   useLocation,
 } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./pages/Login";
 import Settings from "./pages/Settings";
 import ResetAuth from "./pages/ResetAuth";
 import Layout from "./components/layout/Layout";

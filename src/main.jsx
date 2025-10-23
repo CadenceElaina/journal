@@ -6,16 +6,19 @@ import { ThemeProvider } from "./features/theme/ThemeContext.jsx";
 import { AuthProvider } from "./features/auth/context/AuthContext.jsx";
 import { PasswordResetProvider } from "./features/auth/context/PasswordResetContext.jsx";
 import { EmailVerificationProvider } from "./features/auth/context/EmailVerificationContext.jsx";
+import { JournalsProvider } from "./features/journal/context/JournalsContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
       <AuthProvider>
-        <PasswordResetProvider>
-          <EmailVerificationProvider>
-            <App />
-          </EmailVerificationProvider>
-        </PasswordResetProvider>
+        <JournalsProvider>
+          <PasswordResetProvider>
+            <EmailVerificationProvider>
+              <App />
+            </EmailVerificationProvider>
+          </PasswordResetProvider>
+        </JournalsProvider>
       </AuthProvider>
     </ThemeProvider>
   </StrictMode>
