@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }) => {
         name: data.name,
         username: data.username,
         email: data.email,
+        role: data.role,
         isEmailVerified: data.isEmailVerified || false,
       };
 

@@ -46,6 +46,7 @@ authRouter.post("/login", async (request, response, next) => {
       name: user.name,
       username: user.username,
       email: user.email,
+      role: user.role,
       isEmailVerified: user.isEmailVerified,
     });
   } catch (error) {
@@ -163,70 +164,64 @@ authRouter.post("/forgot-password/request", async (request, response, next) => {
   }
 });
 
-authRouter.post(
-  "/password-reset/verify",
-  async (request, response, next) => {
-    // token
-    try {
-      // if token matches token then send back confirmation
-      const { resetCode, email } = request.body;
-      const resetDocument = await PasswordReset.findOne({ email: email });
-      if (!resetDocument) {
-        return response.status(401).json({ error: "invalid email" });
-      }
-
-      if (resetDocument.expiresAt < Date.now()) {
-        return response.status(401).json({ error: "reset code expired" });
-      }
-
-      if (resetDocument.attempts > 3) {
-        return response.status(401).json({ error: "too many attempts" });
-      }
-
-      if (resetCode !== resetDocument.resetCode) {
-        resetDocument.attempts++;
-        resetDocument.save();
-        return response.status(401).json({ error: "incorrect code" });
-      }
-
-      response.status(200).send("Code validated");
-    } catch (error) {
-      next(error);
+authRouter.post("/password-reset/verify", async (request, response, next) => {
+  // token
+  try {
+    // if token matches token then send back confirmation
+    const { resetCode, email } = request.body;
+    const resetDocument = await PasswordReset.findOne({ email: email });
+    if (!resetDocument) {
+      return response.status(401).json({ error: "invalid email" });
     }
-  }
-);
 
-authRouter.post(
-  "/password-reset/reset",
-  async (request, response, next) => {
-    // token
-    try {
-      const { email, resetCode, newPassword } = request.body;
-      const resetDocument = await PasswordReset.findOne({ email: email });
-      if (!(newPassword && email)) {
-        return response.status(400).json({
-          error: "email, and password must be given",
-        });
-      }
-      if (resetCode !== resetDocument.resetCode) {
-        resetDocument.attempts++;
-        resetDocument.save();
-        return response.status(401).json({ error: "incorrect code" });
-      }
-
-      const saltRounds = 10;
-      const passwordHash = await bcrypt.hash(newPassword, saltRounds);
-
-      const user = await User.findOne({ email: email });
-      user.passwordHash = passwordHash;
-      await user.save();
-      await PasswordReset.deleteOne({ _id: resetDocument._id });
-      response.status(200).send("User's password updated");
-    } catch (error) {
-      next(error);
+    if (resetDocument.expiresAt < Date.now()) {
+      return response.status(401).json({ error: "reset code expired" });
     }
+
+    if (resetDocument.attempts > 3) {
+      return response.status(401).json({ error: "too many attempts" });
+    }
+
+    if (resetCode !== resetDocument.resetCode) {
+      resetDocument.attempts++;
+      resetDocument.save();
+      return response.status(401).json({ error: "incorrect code" });
+    }
+
+    response.status(200).send("Code validated");
+  } catch (error) {
+    next(error);
   }
-);
+});
+
+authRouter.post("/password-reset/reset", async (request, response, next) => {
+  // token
+  try {
+    const { email, resetCode, newPassword } = request.body;
+    const resetDocument = await PasswordReset.findOne({ email: email });
+    if (!(newPassword && email)) {
+      return response.status(400).json({
+        error: "email, and password must be given",
+      });
+    }
+    if (resetCode !== resetDocument.resetCode) {
+      resetDocument.attempts++;
+      resetDocument.save();
+      return response.status(401).json({ error: "incorrect code" });
+    }
+
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+
+    const user = await User.findOne({ email: email });
+    user.passwordHash = passwordHash;
+    await user.save();
+    await PasswordReset.deleteOne({ _id: resetDocument._id });
+    response.status(200).send("User's password updated");
+  } catch (error) {
+    next(error);
+  }
+});
 
 // Logout - invalidate refresh token
 authRouter.post("/logout", async (request, response, next) => {

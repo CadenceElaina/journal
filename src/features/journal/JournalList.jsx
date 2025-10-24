@@ -2,8 +2,19 @@ import React from "react";
 import { useJournals } from "./context/JournalsContext";
 
 const JournalList = () => {
-  const { addJournal, showAllJournals, editJournal, removeJournal } =
-    useJournals();
+  const {
+    view,
+    journals,
+    searchAndFilters,
+    pagination,
+    isLoading,
+    error,
+    token,
+    addJournal,
+    showAllJournals,
+    editJournal,
+    removeJournal,
+  } = useJournals();
 
   return (
     <div>

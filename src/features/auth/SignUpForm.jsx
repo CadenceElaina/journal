@@ -8,11 +8,21 @@ import EmailVerificationForm from "./EmailVerificationForm";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState({
-    name: "",
+    prefix: "",
+    firstName: "",
+    lastName: "",
+    suffix: "",
     username: "",
     email: "",
     password: "",
+    role: "nonProvider",
+    providerProfile: {
+      specialty: null,
+      license: null,
+      bio: null,
+    },
   });
+  const [isProvider, setIsProvider] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -25,6 +35,12 @@ const SignUpForm = () => {
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  }
+
+  function handleRoleChange(e) {
+    const { value } = e.target;
+    setFormData((prev) => ({ ...prev, role: value }));
+    setIsProvider(value === "provider");
   }
 
   async function handleSubmit(e) {
@@ -78,7 +94,42 @@ const SignUpForm = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <h3>Required: </h3>
-
+          <div className="form-field">
+            <label htmlFor="provider">Are you a healthcare provider?:</label>
+            <label htmlFor="yes">I'm a provider:</label>
+            <input
+              type="radio"
+              name="role"
+              label="yes"
+              value="provider"
+              onChange={handleRoleChange}
+              checked={formData.role === "provider"} // if formData.role is not provider we do not check this radio
+              className="form-input"
+              required
+            />
+            <label htmlFor="yes">I'm not a provider:</label>
+            <input
+              type="radio"
+              name="role"
+              label="no"
+              value="nonProvider"
+              onChange={handleRoleChange}
+              checked={formData.role === "nonProvider"}
+              className="form-input"
+              required
+            />
+          </div>
+          <div className="form-field">
+            <label htmlFor="name">Name:</label>
+            <input
+              name="name"
+              label="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="form-input"
+              required
+            />
+          </div>
           <div className="form-field">
             <label htmlFor="email">Email:</label>
             <input
@@ -105,6 +156,7 @@ const SignUpForm = () => {
           <div className="form-field">
             <label htmlFor="password">Password:</label>
             <input
+              type={showPassword ? "text" : "password"}
               name="password"
               label="password"
               value={formData.password}
@@ -112,21 +164,18 @@ const SignUpForm = () => {
               className="form-input"
               required
             />
+            <label>
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword((prev) => !prev)}
+              />
+              Show Password
+            </label>
           </div>
         </div>
         <div>
           <h3>Optional: </h3>
-          <div className="form-field">
-            <label htmlFor="name">Name:</label>
-            <input
-              name="name"
-              label="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="form-input"
-              required
-            />
-          </div>
         </div>
         <button type="button" onClick={handleDemoLogin} className="demo-button">
           Use Demo

@@ -21,6 +21,7 @@ export const JournalsProvider = ({ children }) => {
     sort: "", //newest is default
     page: 1,
     limit: 0,
+    isShared: false,
   });
   const [pagination, setPagination] = useState({
     currentPage: 0,
@@ -71,10 +72,6 @@ export const JournalsProvider = ({ children }) => {
       ...searchAndFilters,
       page: pageNum,
     });
-  };
-
-  const setView = (view) => {
-    setView(view);
   };
 
   const addJournal = async (journal) => {
