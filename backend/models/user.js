@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema(
     suffix: {
       // MD, DO, PsyD, PhD, LCSW, etc.
       type: String,
-      trime: true,
+      trim: true,
     },
 
     // --- Authentication ---

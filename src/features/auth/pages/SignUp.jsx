@@ -1,12 +1,12 @@
-import React from "react";
-import { useState } from "react";
-import { useAuth } from "./context/AuthContext";
-import { useEmailVerification } from "./context/EmailVerificationContext";
-import userService from "../../services/users";
 import { useNavigate } from "react-router-dom";
-import EmailVerificationForm from "./EmailVerificationForm";
+import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useEmailVerification } from "../context/EmailVerificationContext";
+import userService from "../../../services/users";
 
-const SignUpForm = () => {
+import EmailVerificationForm from "../components/EmailVerificationForm";
+
+const SignUp = () => {
   const [formData, setFormData] = useState({
     prefix: "",
     firstName: "",
@@ -17,8 +17,8 @@ const SignUpForm = () => {
     password: "",
     role: "nonProvider",
     providerProfile: {
-      specialty: null,
-      license: null,
+      specialty: [],
+      license: [],
       bio: null,
     },
   });
@@ -119,6 +119,14 @@ const SignUpForm = () => {
               required
             />
           </div>
+          {formData.role === "provider" && (
+            <div className="form-field">
+              <label htmlFor="specialty"></label>
+
+              <label htmlFor="licenses"></label>
+              <button onClick={add}>Add License</button>
+            </div>
+          )}
           <div className="form-field">
             <label htmlFor="name">Name:</label>
             <input
@@ -189,4 +197,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignUp;

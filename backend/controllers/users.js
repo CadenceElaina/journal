@@ -16,7 +16,16 @@ usersRouter.get("/", async (request, response, next) => {
 
 usersRouter.post("/", async (request, response, next) => {
   try {
-    const { name, username, email, password } = request.body;
+    const {
+      prefix,
+      firstName,
+      lastName,
+      suffix,
+      username,
+      email,
+      password,
+      role,
+    } = request.body;
 
     if (!(username && password && email)) {
       return response.status(400).json({
