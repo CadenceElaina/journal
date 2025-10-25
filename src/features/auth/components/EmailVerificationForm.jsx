@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEmailVerification } from "./context/EmailVerificationContext";
-import { useAuth } from "./context/AuthContext";
+import { useEmailVerification } from "../context/EmailVerificationContext";
+import { useAuth } from "../context/AuthContext";
 
 const EmailVerificationForm = () => {
   const [verificationCode, setVerificationCode] = useState("");
@@ -89,11 +89,7 @@ const EmailVerificationForm = () => {
           Resend Code
         </button>
 
-        <button
-          type="button"
-          onClick={handleSkip}
-          className="skip-button"
-        >
+        <button type="button" onClick={handleSkip} className="skip-button">
           Skip for Now
         </button>
       </form>

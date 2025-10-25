@@ -1,9 +1,5 @@
-import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import "./styles/global.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./features/journal/pages/Dashboard";
 import Settings from "./features/settings/pages/Settings";
 import ResetAuth from "./features/auth/pages/ResetAuth";

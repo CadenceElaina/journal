@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { usePasswordReset } from "../context/PasswordResetContext";
 
-const ResetAuth = () => {
+const PasswordReset = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showReset, setShowReset] = useState(false);
   const [password, setPassword] = useState("");
@@ -116,4 +116,4 @@ const ResetAuth = () => {
     );
 };
 
-export default ResetAuth;
+export default PasswordReset;
