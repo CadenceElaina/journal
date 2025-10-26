@@ -43,7 +43,10 @@ authRouter.post("/login", async (request, response, next) => {
     response.status(200).send({
       token,
       refreshToken,
-      name: user.name,
+      prefix: user.prefix,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      suffix: user.suffix,
       username: user.username,
       email: user.email,
       role: user.role,

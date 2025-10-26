@@ -65,14 +65,15 @@ const userSchema = mongoose.Schema(
 
     // --- Provider Specific Info ---
     providerProfile: {
-      specialty: { type: String, trim: true },
-      license: { type: String, trim: true },
-      bio: { type: String, trim: true },
+      specialty: { type: [String], default: [] },
+      license: { type: [String], default: [] },
+      bio: { type: String, trim: true, default: "" },
     },
 
     // --- App level Flags ---
     isDemo: { type: Boolean, default: false },
     isEmailVerified: { type: Boolean, default: false },
+    onboardingCompleted: { type: Boolean, default: false },
     lastActivity: { type: Date, default: Date.now },
   },
   {

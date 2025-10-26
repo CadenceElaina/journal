@@ -16,6 +16,8 @@ export const AuthProvider = ({ children }) => {
     refreshToken: null,
   });
   const [status, setStatus] = useState(AUTH_STATUS.LOGGED_OUT);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Load user from local storage on mount
   useEffect(() => {
@@ -31,8 +33,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
+      setIsLoading(true);
       // get user data and tokens
       const data = await authService.login(credentials);
+      setIsLoading(false);
 
       const userData = {
         name: data.name,
@@ -58,9 +62,11 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, data: userData };
     } catch (error) {
+      const errorMsg = error.response?.data?.error || "Login failed";
+      setError(errorMsg);
       return {
         success: false,
-        error: error.response?.data?.error || "Login failed",
+        error: errorMsg || "Login failed",
       };
     }
   };
@@ -68,7 +74,9 @@ export const AuthProvider = ({ children }) => {
   const loginAsDemo = async () => {
     // Make it async
     try {
+      setIsLoading(true);
       const data = await authService.createDemoSession(); // Add await
+      setIsLoading(false);
 
       const demoUserData = {
         username: data.username,
@@ -88,9 +96,11 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, data: demoUserData };
     } catch (error) {
+      const errorMsg = error.response?.data?.error || "Demo session failed";
+      setError(errorMsg);
       return {
         success: false,
-        error: error.response?.data?.error || "Demo session failed",
+        error: errorMsg || "Demo session failed",
       };
     }
   };
@@ -98,9 +108,12 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       if (tokens.refreshToken) {
+        setIsLoading(true);
         await authService.logout(tokens.refreshToken); // invalidate token in backend
+        setIsLoading(false);
       }
     } catch (error) {
+      setError(`Logout error: ${error}`);
       console.error("Logout error:", error);
     } finally {
       // Clear state regardless of API success
@@ -117,8 +130,9 @@ export const AuthProvider = ({ children }) => {
       if (!tokens.refreshToken) {
         throw new Error("No refresh token available");
       }
-
+      setIsLoading(true);
       const data = await authService.refreshToken(tokens.refreshToken);
+      setIsLoading(false);
 
       const newTokens = {
         accessToken: data.accessToken, // new token
@@ -130,6 +144,8 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (error) {
+      const errorMsg = error.response?.data?.error || "Invalid or expired code";
+      setError(errorMsg);
       // Refresh failed - log out user
       await logout(); // user = null, tokens = null, status = logged_out, removes user and tokens from local storage
       return {
@@ -151,6 +167,9 @@ export const AuthProvider = ({ children }) => {
     user,
     status,
     tokens,
+    isLoading,
+    error,
+    setError,
     AUTH_STATUS,
     login,
     loginAsDemo,

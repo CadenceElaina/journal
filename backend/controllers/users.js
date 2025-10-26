@@ -4,6 +4,7 @@ const usersRouter = require("express").Router();
 const User = require("../models/user");
 const EmailVerification = require("../models/emailVerification");
 const { sendEmail } = require("../utils/mailer");
+const middleware = require("../utils/middleware");
 
 usersRouter.get("/", async (request, response, next) => {
   try {
@@ -17,19 +18,23 @@ usersRouter.get("/", async (request, response, next) => {
 usersRouter.post("/", async (request, response, next) => {
   try {
     const {
-      prefix,
       firstName,
       lastName,
-      suffix,
       username,
       email,
       password,
       role,
     } = request.body;
 
-    if (!(username && password && email)) {
+    if (!(firstName && lastName && username && password && email && role)) {
       return response.status(400).json({
-        error: "username, email, and password must be given",
+        error: "firstName, lastName, username, email, password, and role must be given",
+      });
+    }
+
+    if (!["provider", "nonProvider"].includes(role)) {
+      return response.status(400).json({
+        error: "role must be either 'provider' or 'nonProvider'",
       });
     }
 
@@ -51,10 +56,13 @@ usersRouter.post("/", async (request, response, next) => {
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
     const user = new User({
-      name,
+      firstName,
+      lastName,
       username,
       email,
       passwordHash,
+      role,
+      onboardingCompleted: role === "nonProvider", // nonProviders don't need onboarding
     });
 
     const savedUser = await user.save();
@@ -99,5 +107,54 @@ usersRouter.post("/", async (request, response, next) => {
     next(error);
   }
 });
+
+// PATCH /api/users/profile/provider - Complete provider onboarding
+usersRouter.patch(
+  "/profile/provider",
+  middleware.userExtractor,
+  async (request, response, next) => {
+  try {
+    const { prefix, suffix, providerProfile } = request.body;
+    const user = request.user; // Set by userExtractor middleware
+
+    if (!user) {
+      return response.status(401).json({
+        error: "Authentication required",
+      });
+    }
+
+    if (user.role !== "provider") {
+      return response.status(403).json({
+        error: "Only providers can complete onboarding",
+      });
+    }
+
+    // Update user fields
+    if (prefix !== undefined) user.prefix = prefix;
+    if (suffix !== undefined) user.suffix = suffix;
+
+    if (providerProfile) {
+      if (providerProfile.specialty !== undefined) {
+        user.providerProfile.specialty = providerProfile.specialty;
+      }
+      if (providerProfile.license !== undefined) {
+        user.providerProfile.license = providerProfile.license;
+      }
+      if (providerProfile.bio !== undefined) {
+        user.providerProfile.bio = providerProfile.bio;
+      }
+    }
+
+    // Mark onboarding as completed
+    user.onboardingCompleted = true;
+
+    const updatedUser = await user.save();
+
+    response.status(200).json(updatedUser);
+  } catch (error) {
+    next(error);
+  }
+  }
+);
 
 module.exports = usersRouter;

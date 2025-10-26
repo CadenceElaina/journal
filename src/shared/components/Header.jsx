@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useEmailVerification } from "../../features/auth/context/EmailVerificationContext";
-import ThemeSelector from "./ThemeSelector";
-import "./Header.css";
+import ThemeSelector from "../theme/ThemeSelector";
+import "../styles/Header.css";
 
 const Header = () => {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
