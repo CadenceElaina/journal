@@ -1,55 +1,32 @@
-import axios from "axios";
-const baseUrl = "/api/journals";
-
-let token = null;
-
-const setToken = (newToken) => {
-  token = `Bearer ${newToken}`;
-};
+import api from "./api";
 
 const getAllJournals = async (params = {}) => {
-  const config = {
-    headers: { Authorization: token },
-    params: params, //term, tags, moods, startDate, endDate, date, sort, page, limit
-  };
-  const response = await axios.get(baseUrl, config);
+  // api instance automatically adds token via interceptor
+  const response = await api.get("/journals", { params });
   return response.data;
 };
 
 const getJournalById = async (id) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.get(`${baseUrl}/${id}`, config);
+  const response = await api.get(`/journals/${id}`);
   return response.data;
 };
 
 const createJournal = async (newJournal) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.post(baseUrl, newJournal, config);
+  const response = await api.post("/journals", newJournal);
   return response.data;
 };
 
 const updateJournal = async (id, updatedJournal) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.put(`${baseUrl}/${id}`, updatedJournal, config);
+  const response = await api.put(`/journals/${id}`, updatedJournal);
   return response.data;
 };
 
 const deleteJournal = async (id) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.delete(`${baseUrl}/${id}`, config);
+  const response = await api.delete(`/journals/${id}`);
   return response.data;
 };
 
 export default {
-  setToken,
   getAllJournals,
   getJournalById,
   createJournal,

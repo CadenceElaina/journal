@@ -1,14 +1,23 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  use,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import journalsService from "../../../services/journals";
+import { useAuth } from "../../auth/context/AuthContext";
 
 const JournalsContext = createContext(null);
 
 const VIEWS = {
   MY_JOURNALS: "myJournals",
-  SHARED_JOURNALS: "sharedJournals", // filter by professionals client's journals?
+  SHARED_JOURNALS: "sharedJournals",
 };
 
 export const JournalsProvider = ({ children }) => {
+  const { tokens } = useAuth();
+
   const [view, setView] = useState(VIEWS.MY_JOURNALS);
   const [journals, setJournals] = useState([]);
   const [searchAndFilters, setSearchAndFilters] = useState({
@@ -20,7 +29,7 @@ export const JournalsProvider = ({ children }) => {
     date: null,
     sort: "", //newest is default
     page: 1,
-    limit: 0,
+    limit: 10,
     isShared: false,
   });
   const [pagination, setPagination] = useState({
@@ -30,138 +39,219 @@ export const JournalsProvider = ({ children }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  //token synchronization
-  const [token, setToken] = useState(null);
-  //refresh activity/tokens on CRUD action
 
-  // Load journals user has access to on mount
+  //refresh activity/tokens on CRUD action?
+  // Set token whenever it changes
   useEffect(() => {
-    const journals = localStorage.getItem("journals");
-
-    if (journals) {
-      setJournals(JSON.parse(journals));
+    if (tokens?.accessToken) {
+      journalsService.setToken(tokens.accessToken);
     }
-  }, []);
+  }, [tokens?.accessToken]);
+
+  // Initial fetch when token is available
+  useEffect(() => {
+    if (tokens?.accessToken) {
+      showAllJournals(searchAndFilters);
+    }
+  }, [tokens?.accessToken]);
+
+  // refetch when search/filters change
+  useEffect(() => {
+    if (tokens?.accessToken) {
+      const delayDebounce = setTimeout(() => {
+        showAllJournals(searchAndFilters);
+      }, 300); // Debounce search
+
+      return () => clearTimeout(delayDebounce);
+    }
+  }, [searchAndFilters]);
 
   // Setter functions for search and filters
-  const updateSearchTerm = (term) => {
-    setSearchAndFilters({
-      ...searchAndFilters,
-      term: term,
-    });
+  const switchView = (newView) => {
+    setView(newView);
+    setSearchAndFilters((prev) => ({
+      ...prev,
+      isShared: newView === VIEWS.SHARED_JOURNALS,
+      page: 1,
+    }));
   };
 
-  const updateFilters = ({ tags, moods, dates }) => {
-    setSearchAndFilters({
-      ...searchAndFilters,
-      tags: tags,
-      moods: moods,
-      dates: dates,
-    });
+  const updateSearchTerm = (term) => {
+    setSearchAndFilters((prev) => ({
+      ...prev,
+      term,
+      page: 1,
+    }));
+  };
+
+  const updateFilters = ({ tags, moods, startDate, endDate, date }) => {
+    setSearchAndFilters((prev) => ({
+      ...prev,
+      tags,
+      moods,
+      startDate,
+      endDate,
+      date,
+      page: 1,
+    }));
   };
 
   const updateSort = (sortOption) => {
-    setSearchAndFilters({
-      ...searchAndFilters,
+    setSearchAndFilters((prev) => ({
+      ...prev,
       sort: sortOption,
-    });
+      page: 1,
+    }));
   };
 
   const updatePage = (pageNum) => {
-    setSearchAndFilters({
-      ...searchAndFilters,
+    setSearchAndFilters((prev) => ({
+      ...prev,
       page: pageNum,
+    }));
+  };
+
+  const resetFilters = () => {
+    setSearchAndFilters({
+      term: "",
+      tags: [],
+      moods: [],
+      startDate: null,
+      endDate: null,
+      date: null,
+      sort: "",
+      page: 1,
+      limit: 0,
+      isShared: false,
     });
   };
+
+  const clearError = () => {
+    setError(null);
+  };
+
+  // CRUD Actions
 
   const addJournal = async (journal) => {
     try {
       setIsLoading(true);
+      setError(null);
       const data = await journalsService.createJournal(journal);
-      setIsLoading(false);
-      // get all journals to show updated one?
 
+      // Add to local state immediately - optimistic update: https://stackoverflow.com/questions/33009657/what-are-optimistic-updates-in-front-end-development
+      setJournals((prev) => [data, ...prev]);
+
+      // refetech to ensure consistency
+      // await showAllJournals(searchAndFilters);
+
+      setIsLoading(false);
       return { success: true, data: data };
     } catch (error) {
-      setError(error.response?.data?.error || "Add journal failed");
-      return {
-        success: false,
-        error: error.response?.data?.error || "Add journal failed",
-      };
+      setIsLoading(false);
+      const errorMsg = error.response?.data?.error || "Add journal failed";
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   const showAllJournals = async (params) => {
     try {
       setIsLoading(true);
+      setError(null);
       const data = await journalsService.getAllJournals(params);
-      setIsLoading(false);
-      const paginationValues = {
+
+      setPagination({
         currentPage: data.currentPage,
         totalPages: data.totalPages,
         totalJournals: data.totalJournals,
-      };
-
-      setPagination(paginationValues);
+      });
       setJournals(data.journals);
+      setIsLoading(false);
 
-      return { success: true };
+      return { success: true, data };
     } catch (error) {
-      setError(error.response?.data?.error || "showAllJournals failed");
-      return {
-        success: false,
-        error: error.response?.data?.error || "showAllJournals failed",
-      };
+      setIsLoading(false);
+      const errorMsg = error.response?.data?.error || "showAllJournals failed";
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
+    }
+  };
+
+  const getJournalById = async (id) => {
+    try {
+      setIsLoading(true);
+      const data = await journalsService.getJournalById(id);
+      setIsLoading(false);
+      return { success: true, data };
+    } catch (error) {
+      setIsLoading(false);
+      const errorMsg = error.response?.data?.error || "Failed to fetch journal";
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   const editJournal = async (id, updatedJournal) => {
     try {
       setIsLoading(true);
+      setError(null);
       const data = await journalsService.updateJournal(id, updatedJournal);
+
+      // Update local state
+      setJournals(
+        (prev) => prev.map((journal) => (journal.id === id ? data : journal)) // if id of existing journal matches the one we need to update - replace it with updated value else keep original
+      );
+
       setIsLoading(false);
-      // return updated journals?
       return { success: true };
     } catch (error) {
-      setError(error.response?.data?.error || "Edit journal failed");
-      return {
-        success: false,
-        error: error.response?.data?.error || "Edit journal failed",
-      };
+      setIsLoading(false);
+      const errorMsg = error.response?.data?.error || "Edit journal failed";
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   const removeJournal = async (id) => {
     try {
       setIsLoading(true);
-      const data = await journalsService.deleteJournal(id);
+      setError(null);
+      await journalsService.deleteJournal(id);
+
       // journal deleted - filter current list or fetch updated list?
-      await journalsService.getAllJournals();
+      setJournals((prev) => prev.filter((journal) => journal.id !== id)); // setJournals to be all except the one that matches our id to remove
+
       setIsLoading(false);
       return { success: true };
     } catch (error) {
-      setError(error.response?.data?.error || "Delete journal failed");
-      return {
-        success: false,
-        error: error.response?.data?.error || "Delete journal failed",
-      };
+      setIsLoading(false);
+      const errorMsg = error.response?.data?.error || "Delete journal failed";
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
   const value = {
     view,
+    VIEWS,
     journals,
     searchAndFilters,
     pagination,
     isLoading,
     error,
-    token,
-    addJournal,
+    updateSearchTerm,
+    updateFilters,
+    updateSort,
+    updatePage,
+    switchView,
+    resetFilters,
+    clearError,
     showAllJournals,
+    getJournalById,
+    addJournal,
     editJournal,
     removeJournal,
   };
-
   return (
     <JournalsContext.Provider value={value}>
       {children}

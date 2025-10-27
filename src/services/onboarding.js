@@ -1,21 +1,10 @@
-import axios from "axios";
-const baseUrl = "/api/users/profile/provider";
-
-let token = null;
-
-const setToken = (newToken) => {
-  token = `Bearer ${newToken}`;
-};
+import api from "./api";
 
 const completeOnboarding = async (providerData) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-  const response = await axios.patch(baseUrl, providerData, config);
+  const response = await api.patch("/users/profile/provider", providerData);
   return response.data;
 };
 
 export default {
-  setToken,
   completeOnboarding,
 };

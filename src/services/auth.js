@@ -1,4 +1,5 @@
-import axios from "axios";
+import axios from "axios"; // Keep using axios directly for auth endpoints
+
 const baseUrl = "/api/auth";
 
 const login = async (credentials) => {
@@ -11,7 +12,7 @@ const logout = async (refreshToken) => {
   return response.data;
 };
 
-const refreshToken = async (refreshToken) => {
+const refresh = async (refreshToken) => {
   const response = await axios.post(`${baseUrl}/refresh`, { refreshToken });
   return response.data;
 };
@@ -48,7 +49,7 @@ const createDemoSession = async () => {
 export default {
   login,
   logout,
-  refreshToken,
+  refresh,
   requestPasswordReset,
   verifyResetCode,
   resetPassword,
