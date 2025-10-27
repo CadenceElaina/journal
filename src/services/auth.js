@@ -1,4 +1,4 @@
-import axios from "axios"; // Keep using axios directly for auth endpoints
+import axios from "axios";
 
 const baseUrl = "/api/auth";
 

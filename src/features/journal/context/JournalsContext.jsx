@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  use,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import journalsService from "../../../services/journals";
 import { useAuth } from "../../auth/context/AuthContext";
 
@@ -40,14 +34,7 @@ export const JournalsProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  //refresh activity/tokens on CRUD action?
-  // Set token whenever it changes
-  useEffect(() => {
-    if (tokens?.accessToken) {
-      journalsService.setToken(tokens.accessToken);
-    }
-  }, [tokens?.accessToken]);
-
+  //refresh activity/tokens on CRUD action
   // Initial fetch when token is available
   useEffect(() => {
     if (tokens?.accessToken) {
