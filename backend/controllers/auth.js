@@ -95,8 +95,18 @@ authRouter.post("/refresh", async (request, response, next) => {
       expiresIn: 60 * 60, // 1 hour
     });
 
+    // If refresh is stolen and we dont rotate the refresh token on each refresh then the attacker has 7 days of access
+    // Rotate token so that each refresh invalidates previous refresh tokens
+    const newRefreshToken = jwt.sign(userForToken, config.REFRESH_SECRET, {
+      expiresIn: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    user.refreshToken = newRefreshToken;
+    await user.save();
+
     response.json({
       accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
       username: user.username,
     });
   } catch (error) {

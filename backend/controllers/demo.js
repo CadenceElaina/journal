@@ -33,9 +33,12 @@ demoRouter.post("/", async (request, response, next) => {
 
     //create demo user
     const user = new User({
+      firstName: "Demo",
+      lastName: "User",
       username,
       email: `${username}@demo.temp`, // Add fake email for demo users
       passwordHash,
+      role: "nonProvider", // Demo users are nonProviders
       isDemo: true,
       isEmailVerified: true, // Demo users don't need email verification
     });

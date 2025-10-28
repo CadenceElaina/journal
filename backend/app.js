@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 const nodeCron = require("node-cron");
+const helmet = require("helmet");
 const config = require("./utils/config");
 const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
@@ -24,7 +25,7 @@ mongoose
     logger.info("connected to MongoDB");
   })
   .then(() => {
-    // cron job
+    // cron job every 15 minutes we check if demo expired and cleanup demo users + their journals
     nodeCron.schedule("*/15 * * * *", () => {
       demoCleanup.cleanUpExpiredDemos();
     });
@@ -33,11 +34,62 @@ mongoose
     logger.error("error connection to MongoDB:", error.message);
   });
 
-app.use(cors());
+// ============================================================================
+// SECURITY MIDDLEWARE (Order matters!)
+// ============================================================================
+
+// 1. Security headers with Helmet - prevent XSS, clickjacking, MIME sniffing
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"], // Allow inline styles for React
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+        connectSrc: ["'self'"], // API calls
+      },
+    },
+    hsts: {
+      maxAge: 31536000, // 1 year
+      includeSubDomains: true,
+      preload: true,
+    },
+  })
+);
+
+// 2. HTTPS enforcement - redirect HTTP to HTTPS in production
+if (config.NODE_ENV === "production") {
+  app.use((req, res, next) => {
+    if (req.header("x-forwarded-proto") !== "https") {
+      res.redirect(`https://${req.header("host")}${req.url}`);
+    } else {
+      next();
+    }
+  });
+}
+
+// 3. CORS - restrict origins in production
+app.use(
+  cors({
+    origin:
+      config.NODE_ENV === "production"
+        ? ["https://TODO-MY-DOMAIN.com", "https://www.TODO-MY-DOMAIN.com"]
+        : ["http://localhost:5173", "http://localhost:3000"], // Vite default ports
+    credentials: true, // Allow cookies/auth headers
+    optionsSuccessStatus: 200,
+  })
+);
+
+// 4. Standard Express middleware
 app.use(express.static("dist"));
 app.use(express.json());
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
+
+// ============================================================================
+// ROUTES
+// ============================================================================
 
 app.use("/api/auth", authRouter);
 app.use(
