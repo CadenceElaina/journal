@@ -14,6 +14,7 @@ const journalsRouter = require("./controllers/journals");
 const usersRouter = require("./controllers/users");
 const demoRouter = require("./controllers/demo");
 const emailVerificationRouter = require("./controllers/emailVerification");
+const twoFactorRouter = require("./controllers/twoFactor");
 
 // should mongoose be strictQuery or not?
 
@@ -92,6 +93,7 @@ app.use(middleware.tokenExtractor);
 // ============================================================================
 
 app.use("/api/auth", authRouter);
+app.use("/api/2fa", twoFactorRouter);
 app.use(
   "/api/journals",
   middleware.userExtractor,

@@ -53,6 +53,23 @@ authRouter.post("/login", authLimiter, async (request, response, next) => {
     // Reset failed login attempts on successful login
     await user.resetLoginAttempts();
 
+    // Check if 2FA is enabled
+    if (user.twoFactorEnabled) {
+      // Generate temporary token (short-lived, only for 2FA verification)
+      const tempToken = jwt.sign(
+        { id: user._id, purpose: "2fa-verification" },
+        config.SECRET,
+        { expiresIn: "5m" } // 5 minutes to complete 2FA
+      );
+
+      return response.status(200).json({
+        requires2FA: true,
+        tempToken: tempToken,
+        message: "Please provide your 2FA code",
+      });
+    }
+
+    // No 2FA - proceed with normal login
     const userForToken = {
       username: user.username,
       id: user._id,

@@ -47,6 +47,17 @@ const userSchema = mongoose.Schema(
     passwordHash: String,
     refreshToken: String,
 
+    // 2FA
+    twoFactorSecret: String, // TOTP secret
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    backupCodes: {
+      type: [String],
+      default: [],
+    }, // If user loses phone access they have a way in
+
     // --- Role & Relationship Management ---
     role: {
       type: String,
@@ -95,8 +106,9 @@ userSchema.methods.incLoginAttempts = async function () {
   // Reset attempts if lock has expired
   if (this.lockUntil && this.lockUntil < Date.now()) {
     return this.updateOne({
-      $set: { failedLoginAttempts: 1 },
-      $unset: { lockUntil: 1 },
+      $set: { failedLoginAttempts: 1 }, // Reset counter to 1
+      // Using unset to remove field allows checking by (this.lockUntil) instead of if null or not
+      $unset: { lockUntil: 1 }, // Remove the lockUntil field entirely
     });
   }
 
