@@ -1,4 +1,3 @@
-import axios from "axios";
 /*
 Resources:
 https://axios-http.com/docs/interceptors
@@ -6,25 +5,17 @@ https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API
 https://developer.mozilla.org/en-US/docs/Web/API/Broadcast_Channel_API
 https://www.youtube.com/watch?v=16-1mTdGBoM
 
-Notes: 
-interceptors are middleware - they run before/after each request/response
-Our request interceptor automatically adds tokens to headers
-Response interceptro catches 401 errors and refreshes token
-Queuing - prevents multiple refresh calls if multiple requests fail at once
-*/
-
-const api = axios.create({
-  baseURL: "/api",
-  timeout: 10000, // 10 second timeout - if server is down or slow it times out after 10 seconds - preventing permanent loading for user
-});
-
-/*
-Resources: 
 https://blog.pixelfreestudio.com/how-to-manage-state-across-multiple-tabs-and-windows/
 https://stackoverflow.com/questions/51646853/automating-access-token-refreshing-via-interceptors-in-axios
 https://stackoverflow.com/questions/28230845/communication-between-tabs-or-windows
 https://dev.to/naismith/cross-tab-communication-with-javascript-1hc9
 https://medium.com/@piyalidas.it/angular-cross-tab-sync-with-broadcastchannel-api-web-locks-api-ac31eff0a947
+
+Notes: 
+interceptors are middleware - they run before/after each request/response
+Our request interceptor automatically adds tokens to headers
+Response interceptro catches 401 errors and refreshes token
+Queuing - prevents multiple refresh calls if multiple requests fail at once
 */
 
 //PROBLEM WITHOUT QUEUE
@@ -45,6 +36,12 @@ CROSS-TAB TOKEN REFRESH STRATEGY:
 2. BroadcastChannel
 3. localStorage + storage events 
 */
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "/api",
+  timeout: 10000, // 10 second timeout - if server is down or slow it times out after 10 seconds - preventing permanent loading for user
+});
 
 // Track if we're currently refreshing to prevent multiple refresh calls
 // Initialize cross-tab communication

@@ -39,6 +39,11 @@ const userSchema = mongoose.Schema(
       unique: true,
       minlength: 9, // a@aol.com - 9 min? what other site is less than 3 ig .io exists etc
     },
+    failedLoginAttempts: {
+      type: Number,
+      default: 0,
+    },
+    lockUntil: Date,
     passwordHash: String,
     refreshToken: String,
 
@@ -85,6 +90,40 @@ const userSchema = mongoose.Schema(
 
 userSchema.index({ isDemo: 1, lastActivity: 1 }); // tells MongoDB to create a database-level index to speed up queries - sorted index on these fields for lookups - instead of searching entire phone book search by alphabetical tabs
 
+// Increment failed login attempts
+userSchema.methods.incLoginAttempts = async function () {
+  // Reset attempts if lock has expired
+  if (this.lockUntil && this.lockUntil < Date.now()) {
+    return this.updateOne({
+      $set: { failedLoginAttempts: 1 },
+      $unset: { lockUntil: 1 },
+    });
+  }
+
+  const updates = { $inc: { failedLoginAttempts: 1 } };
+
+  // Lock account after 5 failed attempts for 2 hours
+  if (this.failedLoginAttempts + 1 >= 5 && !this.isLocked()) {
+    updates.$set = { lockUntil: Date.now() + 2 * 60 * 60 * 1000 };
+  }
+
+  return this.updateOne(updates);
+};
+
+// Check if account is locked
+userSchema.methods.isLocked = function () {
+  // Check if lockUntil exists and hasn't expired
+  return !!(this.lockUntil && this.lockUntil > Date.now());
+};
+
+// Reset login attempts after successful login
+userSchema.methods.resetLoginAttempts = async function () {
+  return this.updateOne({
+    $set: { failedLoginAttempts: 0 },
+    $unset: { lockUntil: 1 },
+  });
+};
+
 userSchema.set("toJSON", {
   virtuals: true, // Include virtuals like 'fullName'
   transform: (document, returnedObject) => {
@@ -96,6 +135,7 @@ userSchema.set("toJSON", {
   },
 });
 
-const User = mongoose.model("User", userSchema);
+//const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+//module.exports = User
+module.exports = mongoose.model("User", userSchema);

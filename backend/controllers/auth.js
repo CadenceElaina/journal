@@ -6,22 +6,52 @@ const User = require("../models/user");
 const config = require("../utils/config");
 const { sendEmail } = require("../utils/mailer");
 const PasswordReset = require("../models/passwordReset");
+const rateLimit = require("express-rate-limit");
+const {
+  passwordValidationRules,
+  validate,
+} = require("../utils/passwordValidator");
+
+// Rate limiting for auth routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 requests per window
+  message: "Too many authentication attempts, please try again later",
+});
 
 // Login - authenticate user and return tokens
-authRouter.post("/login", async (request, response, next) => {
+authRouter.post("/login", authLimiter, async (request, response, next) => {
   try {
     const { username, password } = request.body;
 
     const user = await User.findOne({ username });
 
-    const passwordCorrect =
-      user === null ? false : await bcrypt.compare(password, user.passwordHash);
-
-    if (!(user && passwordCorrect)) {
+    if (!user) {
       return response.status(401).json({
         error: "invalid username or password",
       });
     }
+    // Check if account is locked
+    if (user.isLocked()) {
+      return response.status(423).json({
+        success: false,
+        message:
+          "Account is temporarily locked due to too many failed login attempts",
+      });
+    }
+
+    const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
+
+    if (!passwordCorrect) {
+      // Increment failed attempts
+      await user.incLoginAttempts();
+      return response.status(401).json({
+        error: "invalid username or password",
+      });
+    }
+
+    // Reset failed login attempts on successful login
+    await user.resetLoginAttempts();
 
     const userForToken = {
       username: user.username,
@@ -207,34 +237,39 @@ authRouter.post("/password-reset/verify", async (request, response, next) => {
   }
 });
 
-authRouter.post("/password-reset/reset", async (request, response, next) => {
-  // token
-  try {
-    const { email, resetCode, newPassword } = request.body;
-    const resetDocument = await PasswordReset.findOne({ email: email });
-    if (!(newPassword && email)) {
-      return response.status(400).json({
-        error: "email, and password must be given",
-      });
-    }
-    if (resetCode !== resetDocument.resetCode) {
-      resetDocument.attempts++;
-      resetDocument.save();
-      return response.status(401).json({ error: "incorrect code" });
-    }
+authRouter.post(
+  "/password-reset/reset",
+  passwordValidationRules(),
+  validate,
+  async (request, response, next) => {
+    // token
+    try {
+      const { email, resetCode, newPassword } = request.body;
+      const resetDocument = await PasswordReset.findOne({ email: email });
+      if (!(newPassword && email)) {
+        return response.status(400).json({
+          error: "email, and password must be given",
+        });
+      }
+      if (resetCode !== resetDocument.resetCode) {
+        resetDocument.attempts++;
+        resetDocument.save();
+        return response.status(401).json({ error: "incorrect code" });
+      }
 
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(newPassword, saltRounds);
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(newPassword, saltRounds);
 
-    const user = await User.findOne({ email: email });
-    user.passwordHash = passwordHash;
-    await user.save();
-    await PasswordReset.deleteOne({ _id: resetDocument._id });
-    response.status(200).send("User's password updated");
-  } catch (error) {
-    next(error);
+      const user = await User.findOne({ email: email });
+      user.passwordHash = passwordHash;
+      await user.save();
+      await PasswordReset.deleteOne({ _id: resetDocument._id });
+      response.status(200).send("User's password updated");
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 // Logout - invalidate refresh token
 authRouter.post("/logout", async (request, response, next) => {
