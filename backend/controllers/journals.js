@@ -131,12 +131,22 @@ journalsRouter.get("/", async (request, response, next) => {
 
 journalsRouter.get("/:id", async (request, response, next) => {
   try {
-    const journal = await Journal.findById(request.params.id);
-    if (journal) {
-      response.json(journal);
-    } else {
-      response.status(404).end();
+    if (!request.user) {
+      return response.status(401).json({ error: "Authentication required" });
     }
+
+    const journal = await Journal.findById(request.params.id);
+
+    if (!journal) {
+      return response.status(404).json({ error: "Journal not found" });
+    }
+
+    // Verify ownership
+    if (journal.user.toString() !== request.user._id.toString()) {
+      return response.status(403).json({ error: "Access denied" });
+    }
+
+    response.json(journal);
   } catch (error) {
     next(error);
   }

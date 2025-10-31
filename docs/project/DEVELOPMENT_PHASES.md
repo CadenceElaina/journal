@@ -1,8 +1,8 @@
 # Journal App Development Phases
 
-## 🎯 CURRENT STATUS (Updated: October 28, 2025 - Evening)
+## 🎯 CURRENT STATUS (Updated: October 31, 2025)
 
-**Overall Progress: Phase 1 - ~80% Complete** ⬆️ (was 72%)
+**Overall Progress: Phase 1 - ~85% Complete** ⬆️ (was 80%)
 
 ### ✅ Fully Complete:
 
@@ -62,11 +62,16 @@
 - ✅ Password hashing (bcrypt, 10 rounds)
 - ✅ Email verification system
 - ✅ Password reset with rate limiting (3/day)
+- ✅ Security headers (Helmet.js) ✅ NEW
+- ✅ CORS restriction configured ✅ NEW
+- ✅ Rate limiting on auth endpoints (5/15min) ✅ NEW
+- ✅ Rate limiting on registration (3/hour) ✅ NEW
+- ✅ Rate limiting on email verification (5/hour) ✅ NEW
+- ✅ Rate limiting on 2FA endpoints (10/15min) ✅ NEW
+- ✅ Password strength validation (zxcvbn) ✅ NEW
+- ✅ GET /api/users secured (auth required) ✅ NEW
+- ✅ GET /api/journals/:id ownership check ✅ NEW
 - ⏳ HTTPS enforcement (pending deployment)
-- ⏳ Security headers (Helmet.js - TODO)
-- ⏳ CORS restriction (TODO - pending domain)
-- ⏳ Login rate limiting (TODO)
-- ⏳ Password strength validation (TODO)
 
 **See [SECURITY_TODO.md](./SECURITY_TODO.md) for complete security roadmap**
 

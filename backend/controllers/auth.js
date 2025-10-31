@@ -4,20 +4,14 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const User = require("../models/user");
 const config = require("../utils/config");
+const { generateRandomAlphaNumericString } = require("../utils/middleware");
 const { sendEmail } = require("../utils/mailer");
 const PasswordReset = require("../models/passwordReset");
-const rateLimit = require("express-rate-limit");
+const { authLimiter } = require("../utils/rateLimiters");
 const {
   passwordValidationRules,
   validate,
 } = require("../utils/passwordValidator");
-
-// Rate limiting for auth routes
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 requests per window
-  message: "Too many authentication attempts, please try again later",
-});
 
 // Login - authenticate user and return tokens
 authRouter.post("/login", authLimiter, async (request, response, next) => {
@@ -190,20 +184,8 @@ authRouter.post("/forgot-password/request", async (request, response, next) => {
 
     // code expires after 15 minutes
     // could abstract generate code - length + chars set in utils
-    function generateCode(length) {
-      const chars =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-      let result = "";
-
-      for (let i = 0; i < length; i++) {
-        const randomIndex = crypto.randomInt(0, chars.length);
-        result += chars[randomIndex];
-      }
-      return result;
-    }
-
-    const resetCode = generateCode(6);
+    const resetCode = generateRandomAlphaNumericString(6);
     sendEmail(
       email,
       "Journal Password Reset Code",

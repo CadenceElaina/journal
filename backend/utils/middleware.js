@@ -1,13 +1,15 @@
 const logger = require("./logger");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const User = require("../models/user");
+const config = require("./config");
 
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);
   logger.info("Path:  ", request.path);
   //logger.info("Body:  ", request.body); - this can expose passwords and tokens
 
-  // Sanitze sensitive data
+  // Sanitize sensitive data
   const sanitizedBody = { ...request.body };
   if (sanitizedBody.password) sanitizedBody.password = "";
   if (sanitizedBody.newPassword) sanitizedBody.newPassword = "";
@@ -36,8 +38,6 @@ const errorHandler = (error, request, response, next) => {
       .json({ error: "expected `username` to be unique" });
   } else if (error.name === "JsonWebTokenError") {
     return response.status(401).json({ error: "token missing or invalid" });
-  } else if (error.name === "JsonWebTokenError") {
-    return response.status(400).json({ error: error.message });
   } else if (error.name === "TokenExpiredError") {
     return response.status(401).json({ error: "expired token" });
   }
@@ -58,7 +58,7 @@ const userExtractor = async (request, response, next) => {
   try {
     const token = request.token;
     if (token) {
-      const decodedToken = jwt.verify(token, process.env.SECRET);
+      const decodedToken = jwt.verify(token, config.SECRET);
       const user = await User.findById(decodedToken.id);
       request.user = user;
     }
@@ -82,6 +82,19 @@ const demoActivityTracker = async (request, response, next) => {
   next();
 };
 
+const generateRandomAlphaNumericString = (length) => {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  let result = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = crypto.randomInt(0, chars.length);
+    result += chars[randomIndex];
+  }
+  return result;
+};
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
@@ -89,4 +102,5 @@ module.exports = {
   tokenExtractor,
   userExtractor,
   demoActivityTracker,
+  generateRandomAlphaNumericString,
 };

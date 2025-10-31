@@ -5,22 +5,41 @@ const User = require("../models/user");
 const EmailVerification = require("../models/emailVerification");
 const { sendEmail } = require("../utils/mailer");
 const middleware = require("../utils/middleware");
+const { registrationLimiter } = require("../utils/rateLimiters");
 const {
   passwordValidationRules,
   validate,
 } = require("../utils/passwordValidator");
 
-usersRouter.get("/", async (request, response, next) => {
-  try {
-    const users = await User.find({});
-    response.json(users);
-  } catch (error) {
-    next(error);
+// Get all users - ADMIN ONLY or REMOVED
+// TODO: Decide if this endpoint is needed. If yes, add admin authentication.
+// For now, requiring authentication and hiding sensitive data
+usersRouter.get(
+  "/",
+  middleware.userExtractor,
+  async (request, response, next) => {
+    try {
+      if (!request.user) {
+        return response.status(401).json({ error: "Authentication required" });
+      }
+
+      // Only return non-sensitive user info
+      const users = await User.find({})
+        .select(
+          "firstName lastName username role prefix suffix providerProfile.specialty -_id"
+        )
+        .lean();
+
+      response.json(users);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 usersRouter.post(
   "/",
+  registrationLimiter,
   passwordValidationRules(),
   validate,
   async (request, response, next) => {
@@ -70,19 +89,7 @@ usersRouter.post(
 
       const savedUser = await user.save();
 
-      // Generate and send verification code
-      function generateCode(length) {
-        const chars =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        let result = "";
-        for (let i = 0; i < length; i++) {
-          const randomIndex = crypto.randomInt(0, chars.length);
-          result += chars[randomIndex];
-        }
-        return result;
-      }
-
-      const verificationCode = generateCode(6);
+      const verificationCode = middleware.generateRandomAlphaNumericString(6);
 
       const newVerification = new EmailVerification({
         verificationCode: verificationCode,

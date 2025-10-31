@@ -6,9 +6,11 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const config = require("../utils/config");
 const middleware = require("../utils/middleware");
+const { twoFactorLimiter } = require("../utils/rateLimiters");
 
 twoFactorRouter.post(
   "/setup",
+  twoFactorLimiter,
   middleware.userExtractor,
   async (request, response, next) => {
     try {
@@ -48,6 +50,7 @@ twoFactorRouter.post(
 
 twoFactorRouter.post(
   "/verify-setup",
+  twoFactorLimiter,
   middleware.userExtractor,
   async (request, response, next) => {
     try {
@@ -103,118 +106,123 @@ twoFactorRouter.post(
   }
 );
 
-twoFactorRouter.post("/verify-login", async (request, response, next) => {
-  try {
-    const { tempToken, twoFactorToken, backupCode } = request.body;
-
-    if (!tempToken) {
-      return response.status(400).json({ error: "Temporary token required" });
-    }
-
-    // Verify temporary token to get user ID
-    let decoded;
+twoFactorRouter.post(
+  "/verify-login",
+  twoFactorLimiter,
+  async (request, response, next) => {
     try {
-      decoded = jwt.verify(tempToken, config.SECRET);
-    } catch (error) {
-      return response
-        .status(401)
-        .json({ error: "Invalide or expired temporary token" });
-    }
+      const { tempToken, twoFactorToken, backupCode } = request.body;
 
-    const user = await User.findById(decoded.id);
+      if (!tempToken) {
+        return response.status(400).json({ error: "Temporary token required" });
+      }
 
-    if (!user) {
-      return response.status(401).json({ error: "User not found" });
-    }
+      // Verify temporary token to get user ID
+      let decoded;
+      try {
+        decoded = jwt.verify(tempToken, config.SECRET);
+      } catch (error) {
+        return response
+          .status(401)
+          .json({ error: "Invalide or expired temporary token" });
+      }
 
-    if (!user.twoFactorEnabled) {
-      return response
-        .status(400)
-        .json({ error: "2FA is not enabled for this account" });
-    }
+      const user = await User.findById(decoded.id);
 
-    // If 2FA is enabled but no token provided, request it
-    if (!twoFactorToken && !backupCode) {
-      return response.status(200).json({
-        requires2FA: true,
-        message: "Please provide 2FA token",
-      });
-    }
+      if (!user) {
+        return response.status(401).json({ error: "User not found" });
+      }
 
-    let verified = false;
+      if (!user.twoFactorEnabled) {
+        return response
+          .status(400)
+          .json({ error: "2FA is not enabled for this account" });
+      }
 
-    // Verify 2FA token
-    if (twoFactorToken) {
-      verified = speakeasy.totp.verify({
-        secret: user.twoFactorSecret,
-        encoding: "base32",
-        token: twoFactorToken,
-        window: 2,
-      });
-    }
+      // If 2FA is enabled but no token provided, request it
+      if (!twoFactorToken && !backupCode) {
+        return response.status(200).json({
+          requires2FA: true,
+          message: "Please provide 2FA token",
+        });
+      }
 
-    // Verify backup code if provided
-    if (!verified && backupCode && user.backupCodes.length > 0) {
-      for (let i = 0; i < user.backupCodes.length; i++) {
-        const isValid = await bcrypt.compare(backupCode, user.backupCodes[i]);
-        if (isValid) {
-          verified = true;
-          // Remove used backup code
-          user.backupCodes.splice(i, 1);
-          await user.save();
+      let verified = false;
 
-          // Warn if running low on backup codes
-          if (user.backupCodes.length <= 2) {
-            response.locals.warning = `Warning: Only ${user.backupCodes.length} backup codes remaining`;
+      // Verify 2FA token
+      if (twoFactorToken) {
+        verified = speakeasy.totp.verify({
+          secret: user.twoFactorSecret,
+          encoding: "base32",
+          token: twoFactorToken,
+          window: 2,
+        });
+      }
+
+      // Verify backup code if provided
+      if (!verified && backupCode && user.backupCodes.length > 0) {
+        for (let i = 0; i < user.backupCodes.length; i++) {
+          const isValid = await bcrypt.compare(backupCode, user.backupCodes[i]);
+          if (isValid) {
+            verified = true;
+            // Remove used backup code
+            user.backupCodes.splice(i, 1);
+            await user.save();
+
+            // Warn if running low on backup codes
+            if (user.backupCodes.length <= 2) {
+              response.locals.warning = `Warning: Only ${user.backupCodes.length} backup codes remaining`;
+            }
+            break;
           }
-          break;
         }
       }
+
+      if (!verified) {
+        return response
+          .status(401)
+          .json({ error: "Invalid 2FA token or backup code" });
+      }
+
+      // Generate full access tokens
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+
+      const token = jwt.sign(userForToken, config.SECRET, {
+        expiresIn: 60 * 60,
+      });
+
+      const refreshToken = jwt.sign(userForToken, config.REFRESH_SECRET, {
+        expiresIn: 60 * 60 * 24 * 7, //7 days
+      });
+
+      user.refreshToken = refreshToken;
+      await user.save();
+
+      response.json({
+        token,
+        refreshToken,
+        prefix: user.prefix,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        suffix: user.suffix,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        isEmailVerified: user.isEmailVerified,
+        warning: response.locals.warning,
+      });
+    } catch (error) {
+      next(error);
     }
-
-    if (!verified) {
-      return response
-        .status(401)
-        .json({ error: "Invalid 2FA token or backup code" });
-    }
-
-    // Generate full access tokens
-    const userForToken = {
-      username: user.username,
-      id: user._id,
-    };
-
-    const token = jwt.sign(userForToken, config.SECRET, {
-      expiresIn: 60 * 60,
-    });
-
-    const refreshToken = jwt.sign(userForToken, config.REFRESH_SECRET, {
-      expiresIn: 60 * 60 * 24 * 7, //7 days
-    });
-
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    response.json({
-      token,
-      refreshToken,
-      prefix: user.prefix,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      suffix: user.suffix,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      isEmailVerified: user.isEmailVerified,
-      warning: response.locals.warning,
-    });
-  } catch (error) {
-    next(error);
   }
-});
+);
 
 twoFactorRouter.post(
   "/disable",
+  twoFactorLimiter,
   middleware.userExtractor,
   async (request, response, next) => {
     try {

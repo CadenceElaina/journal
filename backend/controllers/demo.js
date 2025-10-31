@@ -2,6 +2,7 @@ const Journal = require("../models/journal");
 const User = require("../models/user");
 const demoRouter = require("express").Router();
 const config = require("../utils/config");
+const { generateRandomAlphaNumericString } = require("../utils/middleware");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const demoJournalEntries = require("../utils/demoJournalData");
@@ -19,14 +20,7 @@ demoRouter.post("/", async (request, response, next) => {
     let username = generateUniqueUsername();
 
     //generate secure random password
-    const length = 10;
-    const charset =
-      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+";
-    let password = "";
-    for (let i = 0; i < length; i++) {
-      const randomIndex = crypto.randomInt(0, charset.length);
-      password += charset[randomIndex];
-    }
+    let password = generateRandomAlphaNumericString(10);
 
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
