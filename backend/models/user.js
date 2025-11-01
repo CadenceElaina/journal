@@ -39,6 +39,10 @@ const userSchema = mongoose.Schema(
       unique: true,
       minlength: 9, // a@aol.com - 9 min? what other site is less than 3 ig .io exists etc
     },
+    pendingEmail: {
+      type: String,
+      trim: true,
+    }, //Temporary storage for email change until verified
     failedLoginAttempts: {
       type: Number,
       default: 0,
@@ -143,7 +147,7 @@ userSchema.set("toJSON", {
     delete returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject.passwordHash; // the passwordHash should not be revealed
-    //TODO: delete returnedObject.refreshToken - Should this be hidden too?
+    delete returnedObject.refreshToken;
   },
 });
 

@@ -109,6 +109,26 @@ emailVerificationRouter.post(
         return response.status(401).json({ error: "incorrect code" });
       }
 
+      // Check if this is for an email change (user has pendingEmail matching this email)
+      const userWithPendingEmail = await User.findOne({ pendingEmail: email });
+
+      if (userWithPendingEmail) {
+        // Email change verification
+        userWithPendingEmail.email = userWithPendingEmail.pendingEmail;
+        userWithPendingEmail.pendingEmail = undefined;
+        userWithPendingEmail.isEmailVerified = true;
+        await userWithPendingEmail.save();
+
+        // Delete verification document
+        await EmailVerification.deleteOne({ _id: verificationDocument._id });
+
+        return response.status(200).json({
+          message:
+            "Email changed succesfully! Please log in with your new email",
+          isEmailVerified: true,
+        });
+      }
+
       // Mark user as verified
       const user = await User.findOne({ email: email });
       if (!user) {
