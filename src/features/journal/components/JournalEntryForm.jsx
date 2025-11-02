@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useJournals } from "../context/JournalsContext";
 import { findRelatedMoods, isOfficialMood } from "../utils/moodUtils";
 import { MOOD_WHEEL, COMMON_TAGS } from "../constants";
+import RichTextEditor from "../../../shared/components/RichTextEditor";
+import "../../../shared/styles/RichTextEditor.css";
 
 /* Mood / custom_moods / tags identification system
 
@@ -75,7 +77,8 @@ const JournalEntryForm = ({ editingJournal = null, onCancel = null }) => {
 
   const [formData, setFormData] = useState({
     title: "",
-    content: "",
+    content: "", // This will store HTML
+    contentText: "", // This will store plain text for word count
     tags: [],
     moods: [],
     custom_moods: [],
@@ -149,6 +152,15 @@ const JournalEntryForm = ({ editingJournal = null, onCancel = null }) => {
     setFormData((prev) => ({
       ...prev,
       [name]: value,
+    }));
+    setFormError("");
+  };
+  // handler for rich text editor
+  const handleContentChange = (html, text) => {
+    setFormData((prev) => ({
+      ...prev,
+      content: html,
+      contentText: text,
     }));
     setFormError("");
   };
@@ -421,14 +433,10 @@ const JournalEntryForm = ({ editingJournal = null, onCancel = null }) => {
         {/* CONTENT */}
         <div className="form-group">
           <label htmlFor="content">Content *</label>
-          <textarea
-            id="content"
-            name="content"
-            value={formData.content}
-            onChange={handleChange}
+          <RichTextEditor
+            content={formData.content}
+            onChange={handleContentChange}
             placeholder="Write your journal entry..."
-            rows="10"
-            required
           />
           <span className="word-counter">{wordCount} words</span>
         </div>

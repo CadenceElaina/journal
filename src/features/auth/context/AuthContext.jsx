@@ -22,11 +22,15 @@ export const AuthProvider = ({ children }) => {
   // Load user from local storage on mount
   useEffect(() => {
     const savedUser = localStorage.getItem("user");
-    const savedTokens = localStorage.getItem("tokens");
+    const savedAccessToken = localStorage.getItem("accessToken");
+    const savedRefreshToken = localStorage.getItem("refreshToken");
 
-    if (savedUser && savedTokens) {
+    if (savedUser && savedAccessToken && savedRefreshToken) {
       setUser(JSON.parse(savedUser));
-      setTokens(JSON.parse(savedTokens));
+      setTokens({
+        accessToken: savedAccessToken,
+        refreshToken: savedRefreshToken,
+      });
       setStatus(AUTH_STATUS.LOGGED_IN);
     }
   }, []);
@@ -58,7 +62,8 @@ export const AuthProvider = ({ children }) => {
 
       // Persist to localStorage
       localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("tokens", JSON.stringify(tokenData));
+      localStorage.setItem("accessToken", data.token); // Store directly
+      localStorage.setItem("refreshToken", data.refreshToken); // Store directly
 
       return { success: true, data: userData };
     } catch (error) {
@@ -94,6 +99,9 @@ export const AuthProvider = ({ children }) => {
       setTokens(tokenData);
       setStatus(AUTH_STATUS.DEMO);
 
+      localStorage.setItem("accessToken", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
+
       return { success: true, data: demoUserData };
     } catch (error) {
       const errorMsg = error.response?.data?.error || "Demo session failed";
@@ -122,6 +130,8 @@ export const AuthProvider = ({ children }) => {
       setStatus(AUTH_STATUS.LOGGED_OUT);
       localStorage.removeItem("user");
       localStorage.removeItem("tokens");
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
     }
   };
 
@@ -140,8 +150,8 @@ export const AuthProvider = ({ children }) => {
       };
 
       setTokens(newTokens);
-      localStorage.setItem("tokens", JSON.stringify(newTokens));
-
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", tokens.refreshToken);
       return { success: true };
     } catch (error) {
       const errorMsg = error.response?.data?.error || "Invalid or expired code";
