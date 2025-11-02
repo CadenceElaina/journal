@@ -147,6 +147,8 @@ export const JournalsProvider = ({ children }) => {
       setError(null);
       const data = await journalsService.getAllJournals(params);
 
+      console.log("📚 Journals loaded:", data.journals); // DEBUG
+
       setPagination({
         currentPage: data.currentPage,
         totalPages: data.totalPages,
@@ -160,6 +162,7 @@ export const JournalsProvider = ({ children }) => {
       setIsLoading(false);
       const errorMsg = error.response?.data?.error || "showAllJournals failed";
       setError(errorMsg);
+      console.error("❌ Error loading journals:", errorMsg); // DEBUG
       return { success: false, error: errorMsg };
     }
   };

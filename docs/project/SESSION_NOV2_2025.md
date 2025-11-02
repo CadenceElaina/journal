@@ -206,7 +206,28 @@
 
 ## 📌 Notes Section
 
-_(Use this space to document questions, insights, or issues during the session)_
+### Issues Encountered:
+
+1. **Token Storage Mismatch** ✅ FIXED
+
+   - AuthContext stored `token` but api.js looked for `accessToken`
+   - Fixed by renaming to `accessToken` in login function
+
+2. **Navigation Links Refreshing Page** ✅ FIXED
+
+   - Used `<a href="">` instead of `<Link to="">`
+   - Changed to React Router's Link component
+
+3. **Journals Not Loading** 🔨 IN PROGRESS
+
+   - Frontend requests going to localhost:5173 instead of localhost:9000
+   - Vite proxy configured but not working
+   - Need to ensure both backend (port 9000) and frontend (port 5173) are running
+   - Proxy should forward /api requests to backend
+
+4. **Missing custom_moods in Backend** ✅ FIXED
+   - Backend POST and PUT endpoints weren't saving `custom_moods`
+   - Added `custom_moods: request.body.custom_moods` to both endpoints
 
 ---
 

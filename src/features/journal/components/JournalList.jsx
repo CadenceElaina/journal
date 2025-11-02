@@ -21,6 +21,13 @@ const JournalList = () => {
     removeJournal,
   } = useJournals();
 
+  console.log(
+    "🎨 JournalList rendering - journals:",
+    journals,
+    "isLoading:",
+    isLoading
+  ); // DEBUG
+
   const [selectedJournal, setSelectedJournal] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 

@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
       };
 
       const tokenData = {
-        token: data.token,
+        accessToken: data.token,
         refreshToken: data.refreshToken,
       };
 

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../features/auth/context/AuthContext";
 import { useEmailVerification } from "../../features/auth/context/EmailVerificationContext";
 import ThemeSelector from "../theme/ThemeSelector";
@@ -74,6 +75,22 @@ const Header = () => {
     <header className="header">
       <div className="header-content">
         <h1 className="header-title">Journal</h1>
+
+        {/* Navigation */}
+        {user && (
+          <nav className="header-nav">
+            <Link to="/" className="nav-link">
+              My Journals
+            </Link>
+            <Link to="/journals/new" className="nav-link create-link">
+              + New Entry
+            </Link>
+            <Link to="/settings" className="nav-link">
+              Settings
+            </Link>
+          </nav>
+        )}
+
         <div className="header-user-info">
           {user && (
             <>

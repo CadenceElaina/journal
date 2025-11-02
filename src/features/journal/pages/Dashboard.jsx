@@ -1,20 +1,26 @@
 import React from "react";
-import Login from "../../auth/pages/Login";
-import { useAuth } from "../../auth/context/AuthContext";
-import JournalEntryForm from "../components/JournalEntryForm";
+import { useNavigate } from "react-router-dom";
 import JournalList from "../components/JournalList";
+import "../styles/Dashboard.css";
 
 const Dashboard = () => {
-  const { status } = useAuth();
+  const navigate = useNavigate();
+
+  console.log("🏠 Dashboard rendering!"); // DEBUG
 
   return (
-    <>
-      <div>
-        <JournalList />
-        <JournalEntryForm />
+    <div className="dashboard">
+      <div className="dashboard-header">
+        <h1>My Journals</h1>
+        <button
+          className="create-button"
+          onClick={() => navigate("/journals/new")}
+        >
+          + New Journal Entry
+        </button>
       </div>
-      <div>{status === "loggedOut" && <Login />}</div>
-    </>
+      <JournalList />
+    </div>
   );
 };
 

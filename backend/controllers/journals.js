@@ -112,8 +112,8 @@ journalsRouter.get("/", async (request, response, next) => {
     const journals = await Journal.find(finalQuery)
       .sort(sortOptions)
       .skip(skip)
-      .limit(limitNum)
-      .lean(); // .lean() for faster read-only operations
+      .limit(limitNum);
+    // Removed .lean() so toJSON transform runs and converts _id to id
 
     // To provide total count for frontend pagination UI
     const totalJournals = await Journal.countDocuments(finalQuery);
@@ -167,6 +167,7 @@ journalsRouter.post("/", async (request, response, next) => {
       content: request.body.content,
       tags: request.body.tags,
       moods: request.body.moods,
+      custom_moods: request.body.custom_moods,
       user: request.user._id,
       wordCount: wordCount,
     });
@@ -226,6 +227,7 @@ journalsRouter.put("/:id", async (request, response, next) => {
       content: request.body.content,
       tags: request.body.tags,
       moods: request.body.moods,
+      custom_moods: request.body.custom_moods,
       wordCount: wordCount,
     };
 
