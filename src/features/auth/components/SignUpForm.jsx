@@ -1,3 +1,5 @@
+import PasswordStrengthIndicator from "./PasswordStrengthIndicator";
+
 const SignUpForm = ({
   formData,
   handleChange,
@@ -118,10 +120,12 @@ const SignUpForm = ({
             />
             Show Password
           </label>
+
+          <PasswordStrengthIndicator password={formData.password} />
         </div>
 
         {/* Error Message */}
-        {error && <div className="error-message">{error}</div>}
+        {error?.length > 0 && <div className="error-message">{error}</div>}
 
         {/* Demo Button */}
         <button type="button" onClick={handleDemoLogin} className="demo-button">

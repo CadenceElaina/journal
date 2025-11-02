@@ -17,7 +17,9 @@ const passwordValidationRules = () => {
       .withMessage("Password must contain at least one number")
       .matches(/[!@#$%^&*(),.?":{}|<>]/)
       .withMessage("Password must contain at least one special character")
-      .custom((value) => {
+      /*   
+This is too restrictive for our use case but a more secure application would utilize this
+.custom((value) => {
         // Check for common patterns
         const result = zxcvbn(value);
         if (result.score < 3) {
@@ -26,7 +28,7 @@ const passwordValidationRules = () => {
           );
         }
         return true;
-      })
+      }) */
       .trim(),
 
     // Validate 'newPassword' field (for password reset)
@@ -44,7 +46,9 @@ const passwordValidationRules = () => {
       .withMessage("Password must contain at least one number")
       .matches(/[!@#$%^&*(),.?":{}|<>]/)
       .withMessage("Password must contain at least one special character")
-      .custom((value) => {
+      /*      
+This is too restrictive for our use case but a more secure application would utilize this
+.custom((value) => {
         const result = zxcvbn(value);
         if (result.score < 3) {
           throw new Error(
@@ -52,15 +56,17 @@ const passwordValidationRules = () => {
           );
         }
         return true;
-      })
+      }) */
       .trim(),
 
-    body("confirmPassword").custom((value, { req }) => {
+    /*
+      REQUIRES USER TO CONFIRM PASSWORD
+body("confirmPassword").custom((value, { req }) => {
       if (value !== req.body.password) {
         throw new Error("Password confirmation does not match password");
       }
       return true;
-    }),
+    }), */
   ];
 };
 

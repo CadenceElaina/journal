@@ -1,3 +1,4 @@
+import zxcvbn from "zxcvbn";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -25,7 +26,13 @@ const SignUp = () => {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "password") {
+      const validationErrors = validatePassword(value);
+      setError(validationErrors);
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   }
 
   function handleRoleChange(e) {
@@ -33,9 +40,62 @@ const SignUp = () => {
     setFormData((prev) => ({ ...prev, role: value }));
   }
 
+  function validatePassword(password) {
+    const validationErrors = [];
+
+    if (password.length < 8) {
+      validationErrors.push("Password must be at least 8 characters long");
+    }
+
+    if (password.length > 128) {
+      validationErrors.push("Password must be less than 128 characters");
+    }
+
+    if (!/[a-z]/.test(password)) {
+      validationErrors.push(
+        "Password must contain at least one lowercase letter"
+      );
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      validationErrors.push(
+        "Password must contain at least one uppercase letter"
+      );
+    }
+
+    if (!/[0-9]/.test(password)) {
+      validationErrors.push("Password must contain at least one number");
+    }
+
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      validationErrors.push(
+        "Password must contain at least one special character"
+      );
+    }
+
+    /*  
+This is too restrictive for our use but would likely be used for a web app that had many users and was focused on security & protecting user health data etc
+if (password) {
+      const result = zxcvbn(password);
+      if (result.score < 3) {
+        validationErrors.push(
+          "Password is too weak. Avoid common words and patterns."
+        );
+      }
+    } */
+
+    return validationErrors;
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+
+    const validationErrors = validatePassword(formData.password);
+    if (validationErrors.length > 0) {
+      setError(validationErrors);
+      return;
+    }
 
     const result = await userService.signup(formData);
 
