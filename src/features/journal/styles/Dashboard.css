@@ -6,11 +6,17 @@
 
 .dashboard-header {
   display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--card-border);
+}
+
+.header-top {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid var(--card-border);
 }
 
 .dashboard-header h1 {
@@ -18,6 +24,13 @@
   font-size: 2rem;
   color: var(--text-primary);
   font-weight: 600;
+}
+
+.header-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
 }
 
 .create-button {
@@ -50,27 +63,14 @@
   padding: 2rem;
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid var(--card-border);
-}
-
-.page-header h1 {
-  margin: 0;
-  font-size: 2rem;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-
 /* Journal Create Page */
-.journal-create-page {
+.journal-create-page,
+.journal-edit-page {
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
+  height: calc(100vh - 60px); /* Account for header */
+  overflow-y: auto;
 }
 
 /* Responsive */
@@ -81,8 +81,7 @@
     padding: 1rem;
   }
 
-  .dashboard-header,
-  .page-header {
+  .header-top {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
@@ -94,6 +93,29 @@
   }
 
   .create-button {
+    width: 100%;
+  }
+
+  .header-controls {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .header-controls > * {
+    width: 100%;
+  }
+
+  .view-switcher {
+    width: 100%;
+  }
+
+  .search-container,
+  .sort-container {
+    width: 100%;
+  }
+
+  .search-container input,
+  .sort-container select {
     width: 100%;
   }
 }

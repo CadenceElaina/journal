@@ -12,9 +12,15 @@ const JournalCard = ({ journal, onEdit, onDelete, onView }) => {
     });
   };
 
-  const truncateContent = (content, maxLength = 150) => {
-    if (content.length <= maxLength) return content;
-    return content.substring(0, maxLength) + "...";
+  // Strip HTML tags and truncate text content
+  const stripHtmlAndTruncate = (html, maxLength = 150) => {
+    // Create a temporary div to parse HTML
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+    const text = temp.textContent || temp.innerText || "";
+
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + "...";
   };
 
   return (
@@ -25,7 +31,7 @@ const JournalCard = ({ journal, onEdit, onDelete, onView }) => {
       </div>
 
       <div className="journal-card-content">
-        <p>{truncateContent(journal.content)}</p>
+        <p>{stripHtmlAndTruncate(journal.content)}</p>
       </div>
 
       <div className="journal-card-meta">

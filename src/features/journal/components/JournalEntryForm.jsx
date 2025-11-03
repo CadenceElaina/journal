@@ -4,6 +4,7 @@ import { findRelatedMoods, isOfficialMood } from "../utils/moodUtils";
 import { MOOD_WHEEL, COMMON_TAGS } from "../constants";
 import RichTextEditor from "../../../shared/components/RichTextEditor";
 import "../../../shared/styles/RichTextEditor.css";
+import "../styles/JournalEntryForm.css";
 
 /* Mood / custom_moods / tags identification system
 
