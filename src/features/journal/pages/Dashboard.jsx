@@ -6,8 +6,6 @@ import "../styles/Dashboard.css";
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  console.log("🏠 Dashboard rendering!"); // DEBUG
-
   return (
     <div className="dashboard">
       <div className="dashboard-header">

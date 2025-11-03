@@ -1,0 +1,360 @@
+/* Journal List Container */
+.journals-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* List Header */
+.journal-list-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.journal-list-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* View Switcher */
+.view-switcher {
+  display: flex;
+  gap: 0.5rem;
+  background-color: var(--card-bg);
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--card-border);
+  width: fit-content;
+}
+
+.view-switcher button {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: none;
+  background-color: transparent;
+  color: var(--text-secondary);
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.view-switcher button.active {
+  background-color: var(--button-bg);
+  color: var(--button-text);
+}
+
+.view-switcher button:hover:not(.active) {
+  color: var(--text-primary);
+  background-color: var(--button-secondary-bg);
+}
+
+/* Controls */
+.journal-list-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 0.625rem 1rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.5rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  transition: all 0.2s;
+}
+
+.search-container input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.sort-container select {
+  padding: 0.625rem 2rem 0.625rem 1rem;
+  font-size: 0.95rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.5rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+}
+
+.sort-container select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.reset-filters-button {
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-filters-button:hover {
+  background-color: var(--button-secondary-bg-hover);
+}
+
+/* Journal Cards Grid */
+.journals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--divider);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.error-state {
+  background-color: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.error-state p {
+  margin: 0 0 1rem 0;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.error-state button {
+  padding: 0.625rem 1.25rem;
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.error-state button:hover {
+  background-color: #b91c1c;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  background-color: var(--card-bg);
+  border: 2px dashed var(--card-border);
+  border-radius: 0.75rem;
+}
+
+.empty-state h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.empty-state p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.empty-state button {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.empty-state button:hover {
+  background-color: var(--button-bg-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 2rem;
+}
+
+.pagination button {
+  padding: 0.625rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+  border: 1px solid var(--card-border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: var(--button-secondary-bg-hover);
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pagination-info {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Delete Confirmation Modal */
+.delete-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.delete-confirm-modal {
+  background-color: var(--card-bg);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirm-modal h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.delete-confirm-modal p {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.delete-confirm-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.delete-confirm-actions button {
+  flex: 1;
+  padding: 0.75rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirm-delete {
+  background-color: #dc2626;
+  color: white;
+}
+
+.confirm-delete:hover {
+  background-color: #b91c1c;
+}
+
+.cancel-delete {
+  background-color: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
+}
+
+.cancel-delete:hover {
+  background-color: var(--button-secondary-bg-hover);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .journals-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .journal-list-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-container {
+    min-width: 100%;
+  }
+
+  .sort-container {
+    width: 100%;
+  }
+
+  .sort-container select {
+    width: 100%;
+  }
+}

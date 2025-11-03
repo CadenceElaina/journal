@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useJournals } from "../context/JournalsContext";
 import JournalCard from "./JournalCard";
+import "../styles/JournalList.css";
 
 const JournalList = () => {
   const {
@@ -20,13 +21,6 @@ const JournalList = () => {
     clearError,
     removeJournal,
   } = useJournals();
-
-  console.log(
-    "🎨 JournalList rendering - journals:",
-    journals,
-    "isLoading:",
-    isLoading
-  ); // DEBUG
 
   const [selectedJournal, setSelectedJournal] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);

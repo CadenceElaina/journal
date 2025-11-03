@@ -1,4 +1,5 @@
 import React from "react";
+import "../styles/JournalCard.css";
 
 const JournalCard = ({ journal, onEdit, onDelete, onView }) => {
   const formatDate = (dateString) => {

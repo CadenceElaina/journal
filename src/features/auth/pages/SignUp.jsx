@@ -7,6 +7,7 @@ import userService from "../../../services/users";
 
 import EmailVerificationForm from "../components/EmailVerificationForm";
 import SignUpForm from "../components/SignUpForm";
+import "../styles/Login.css";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({

@@ -198,6 +198,226 @@
 
 **First Question:** Let's start with JournalEntryForm. Have you looked at the current implementation? What do you think the form needs in terms of:
 
+---
+
+## 📊 SESSION PROGRESS RECAP
+
+### ✅ Completed Today
+
+**1. Critical Bug Fixes (Multiple Issues Resolved)**
+
+- ✅ **Token Storage Consistency**
+
+  - Fixed: AuthContext login function now stores `accessToken` (was storing `token`)
+  - Impact: api.js interceptor can now correctly read tokens
+  - Files modified: `src/features/auth/context/AuthContext.jsx`
+
+- ✅ **Navigation Link Fixes**
+
+  - Fixed: Changed `<a href="">` to `<Link to="">` in Header
+  - Impact: Navigation no longer causes full page refreshes
+  - Added: My Journals, New Entry, Settings navigation links
+  - Files modified: `src/shared/components/Header.jsx`, `src/shared/styles/Header.css`
+
+- ✅ **Backend Custom Moods Support**
+
+  - Fixed: Added `custom_moods` field to POST and PUT endpoints
+  - Impact: User custom moods are now saved to database
+  - Files modified: `backend/controllers/journals.js` (lines 169, 227)
+
+- ✅ **Backend ID Transformation**
+
+  - Fixed: Removed `.lean()` from GET journals query
+  - Impact: MongoDB's `toJSON` transform now works, converting `_id` to `id`
+  - Files modified: `backend/controllers/journals.js` (line 117)
+
+- ✅ **Critical Routing Architecture Fix**
+  - Fixed: Changed Layout from wrapper to route element with proper Outlet pattern
+  - Impact: Dashboard and all protected pages now render correctly
+  - Before: `<Layout><Routes>...</Routes></Layout>`
+  - After: `<Routes><Route element={<Layout />}>...</Route></Routes>`
+  - Files modified: `src/routes/ProtectedRoutes.jsx`
+
+**2. Component Structure Complete**
+
+- ✅ **JournalCard Component**
+
+  - Status: Fully implemented with all features
+  - Features: Title, content preview, date formatting, tags, moods, word count
+  - Actions: Edit, delete, view buttons
+  - Files: `src/features/journal/components/JournalCard.jsx`
+
+- ✅ **RichTextEditor Component**
+
+  - Status: Fully implemented with Tiptap
+  - Features: Bold, italic, underline, headings, bullet/numbered lists, code blocks
+  - Integration: Works with JournalEntryForm
+  - Files: `src/shared/components/RichTextEditor.jsx`, `src/shared/styles/RichTextEditor.css`
+
+- ✅ **JournalEntryForm Component**
+
+  - Status: Comprehensive implementation with advanced features
+  - Features: Title input, rich text editor, tag system, mood wheel (3-tier), word count
+  - Smart Features: Mood suggestions with synonym/related word mapping
+  - Form validation: Title required, content required
+  - Files: `src/features/journal/components/JournalEntryForm.jsx` (738 lines!)
+
+- ✅ **JournalList Component**
+
+  - Status: Complete with all display logic
+  - Features: Maps journals to cards, pagination, loading/error/empty states
+  - Files: `src/features/journal/components/JournalList.jsx`
+
+- ✅ **Dashboard and Settings Pages**
+  - Dashboard: Header with "New Journal Entry" button + JournalList
+  - Settings: User profile display (username, email, verification status)
+  - Files: `src/features/journal/pages/Dashboard.jsx`, `src/features/settings/pages/Settings.jsx`
+  - Styles: `src/features/journal/styles/Dashboard.css`, `src/features/settings/styles/Settings.css`
+
+**3. Support Systems & Infrastructure**
+
+- ✅ **Mood System**
+
+  - MOOD_WHEEL constant: 3-tier hierarchy (primary → secondary → tertiary)
+  - RELATED_WORDS_MAP: 1186 lines of synonym/related word mappings
+  - Mood utilities: findRelatedMoods, isOfficialMood, getMoodsByTier, getMoodHierarchy
+  - Files: `src/features/journal/constants/moodWheel.js`, `src/features/journal/constants/relatedWordsMap.js`, `src/features/journal/utils/moodUtils.js`
+
+- ✅ **Tags System**
+
+  - COMMON_TAGS constant: Pre-defined common tags
+  - Files: `src/features/journal/constants/commonTags.js`
+
+- ✅ **Data Flow Verified**
+  - API calls working (confirmed via Network tab - 200 responses)
+  - JournalsContext receiving and storing data correctly
+  - Console logs show journals loading: "📚 Journals loaded: Array[...]"
+  - Component rendering pipeline verified
+
+**4. Rich Text Editor**
+
+- ✅ **Tiptap Integration**
+  - Switched from React Quill (incompatible with React 19) to Tiptap
+  - Installed: @tiptap/react@^3.10.1, @tiptap/starter-kit@^3.10.1, @tiptap/extension-placeholder@^3.10.1
+  - Full toolbar with formatting options
+  - Real-time word count via getText()
+
+---
+
+### 🔨 Remaining Work (Not Started or Incomplete)
+
+**1. JournalEntryForm - Missing Pieces**
+
+- ❌ API integration incomplete (form doesn't submit to backend yet)
+- ❌ Edit mode logic (pre-populate form from editingJournal prop)
+- ❌ Form reset after successful creation
+- ❌ Success/error notifications display
+
+**2. Search/Filter/Sort Components**
+
+- ❌ SearchBar component (file exists but empty)
+- ❌ FilterPanel component (file exists but empty)
+- ❌ SortControls component (file exists but empty)
+- ❌ Pagination component (file exists but empty)
+
+**3. Page Components**
+
+- ❌ JournalViewPage (show full journal entry)
+- ❌ JournalEditPage (edit existing entry)
+
+**4. Styling**
+
+- ❌ JournalCard.css (card has no styling)
+- ❌ JournalEntryForm.css (form has minimal styling)
+- ❌ JournalList.css (list has minimal styling)
+- ❌ Responsive design polish across all components
+
+**5. Testing & Polish**
+
+- ❌ End-to-end testing of CRUD operations
+- ❌ Error handling edge cases
+- ❌ Loading state polish
+- ❌ Browser refresh confirmation (awaiting user confirmation that routing fix works)
+
+---
+
+### 📝 Key Learnings & Notes
+
+**1. React Router Outlet Pattern**
+
+- Layout component must be a route element, not a wrapper
+- Correct: `<Route element={<Layout />}><Route index element={<Dashboard />} /></Route>`
+- Incorrect: `<Layout><Routes><Route index element={<Dashboard />} /></Routes></Layout>`
+
+**2. Mongoose .lean() Behavior**
+
+- `.lean()` returns plain JavaScript objects
+- Bypasses Mongoose virtuals and transforms (including toJSON)
+- Don't use `.lean()` when you need `_id` → `id` conversion
+
+**3. Token Naming Consistency**
+
+- Frontend and backend must use same token property names
+- localStorage keys: "accessToken", "refreshToken"
+- AuthContext state: `tokens.accessToken`, `tokens.refreshToken`
+- api.js reads: `localStorage.getItem("accessToken")`
+
+**4. React Router Link vs Anchor**
+
+- Always use `<Link to="">` from react-router-dom
+- Never use `<a href="">` - causes full page refresh and loses state
+
+**5. Tiptap Editor Word Count**
+
+- Use `editor.getText()` for plain text (for word counting)
+- Use `editor.getHTML()` for storage (preserves formatting)
+- Word count: `text.trim().split(/\s+/).filter(Boolean).length`
+
+---
+
+### 🎯 Next Session Goals
+
+**Priority 1: Complete CRUD Operations**
+
+1. Wire up JournalEntryForm submission to backend
+2. Implement edit mode (pre-populate form)
+3. Test full create/edit/delete flow
+
+**Priority 2: Styling & Polish**
+
+1. Create CSS for JournalCard
+2. Create CSS for JournalEntryForm
+3. Create CSS for JournalList
+4. Responsive design adjustments
+
+**Priority 3: Search/Filter/Sort**
+
+1. Implement SearchBar with debounce
+2. Implement FilterPanel (tags, moods, dates)
+3. Implement SortControls dropdown
+4. Implement Pagination controls
+
+**Priority 4: View/Edit Pages**
+
+1. JournalViewPage - display full entry
+2. JournalEditPage - edit existing entry
+3. Navigation between pages
+
+---
+
+### 🐛 Debugging Timeline
+
+**Issue**: Journals not displaying after login, kept getting logged out  
+**Root Cause**: Multiple cascading issues
+
+1. **Token mismatch** - AuthContext stored `token`, api.js looked for `accessToken`
+2. **Navigation refreshes** - `<a href="">` causing page reloads
+3. **Missing custom_moods** - Backend not saving field
+4. **ID conversion** - `.lean()` bypassing toJSON transform
+5. **Routing architecture** - Layout wrapping Routes incorrectly
+
+**Resolution**: Systematic debugging through each layer confirmed data was loading correctly (Network tab, console logs), but components weren't rendering due to Layout/Outlet pattern issue.
+
 1. Tag input - should it be like the onboarding one or different?
 2. Mood selection - chips, dropdown, or something else?
 3. Content textarea - should it support markdown or plain text?

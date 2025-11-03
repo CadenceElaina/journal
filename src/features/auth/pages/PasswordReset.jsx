@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { usePasswordReset } from "../context/PasswordResetContext";
+import "../styles/Login.css";
 
 const PasswordReset = () => {
   const [showPassword, setShowPassword] = useState(false);
