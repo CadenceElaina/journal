@@ -2,4 +2,22 @@ node_modules
 dist/
 .env
 *.env.local
+
+# Documentation (internal/working notes)
+docs/
+instructions.md
+.progress.md
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
 *.log
