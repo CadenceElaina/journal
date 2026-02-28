@@ -124,7 +124,7 @@ twoFactorRouter.post(
       } catch (error) {
         return response
           .status(401)
-          .json({ error: "Invalide or expired temporary token" });
+          .json({ error: "Invalid or expired temporary token" });
       }
 
       const user = await User.findById(decoded.id);

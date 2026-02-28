@@ -4,6 +4,7 @@ const usersRouter = require("express").Router();
 const User = require("../models/user");
 const EmailVerification = require("../models/emailVerification");
 const { sendEmail } = require("../utils/mailer");
+const logger = require("../utils/logger");
 const middleware = require("../utils/middleware");
 const { registrationLimiter } = require("../utils/rateLimiters");
 const {
@@ -108,7 +109,7 @@ usersRouter.post(
           `Welcome! Your email verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.`
         );
       } catch (emailError) {
-        console.error("Failed to send verification email:", emailError);
+        logger.error("Failed to send verification email:", emailError);
         // Continue - user can request resend
       }
 
@@ -330,7 +331,7 @@ usersRouter.patch(
           `You requested to change your email address. Your verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.\n\nIf you did not request this change, please ignore this email.`
         );
       } catch (emailError) {
-        console.error("Failed to send verification email:", emailError);
+        logger.error("Failed to send verification email:", emailError);
         return response
           .status(500)
           .json({ error: "Failed to send verification email" });

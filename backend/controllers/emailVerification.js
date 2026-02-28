@@ -1,6 +1,7 @@
 const emailVerificationRouter = require("express").Router();
 const crypto = require("crypto");
 const { generateRandomAlphaNumericString } = require("../utils/middleware");
+const logger = require("../utils/logger");
 const User = require("../models/user");
 const EmailVerification = require("../models/emailVerification");
 const { sendEmail } = require("../utils/mailer");
@@ -64,7 +65,7 @@ emailVerificationRouter.post(
           `Your email verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.`
         );
       } catch (emailError) {
-        console.error("Failed to send verification email:", emailError);
+        logger.error("Failed to send verification email:", emailError);
         // Email failed but code is saved - user can still request resend
       }
 

@@ -16,8 +16,6 @@ const demoRouter = require("./controllers/demo");
 const emailVerificationRouter = require("./controllers/emailVerification");
 const twoFactorRouter = require("./controllers/twoFactor");
 
-// should mongoose be strictQuery or not?
-
 logger.info("connecting to", config.MONGODB_URI);
 
 mongoose
@@ -75,7 +73,7 @@ app.use(
   cors({
     origin:
       config.NODE_ENV === "production"
-        ? ["https://TODO-MY-DOMAIN.com", "https://www.TODO-MY-DOMAIN.com"]
+        ? [process.env.FRONTEND_URL]
         : ["http://localhost:5173", "http://localhost:3000"], // Vite default ports
     credentials: true, // Allow cookies/auth headers
     optionsSuccessStatus: 200,

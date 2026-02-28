@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Journal = require("../models/journal");
+const logger = require("./logger");
 const DEMO_DURATION = 30 * 60 * 1000; // 30 minutes
 
 async function cleanUpExpiredDemos() {
@@ -13,7 +14,7 @@ async function cleanUpExpiredDemos() {
     }).distinct("_id");
 
     if (expiredDemoUsersIds.length === 0) {
-      console.log("No expired demo sessions to clean up");
+      logger.info("No expired demo sessions to clean up");
       return;
     }
 
@@ -24,9 +25,9 @@ async function cleanUpExpiredDemos() {
       lastActivity: { $lt: expiredTime },
     });
     const unit = result.deletedCount === 1 ? "demo" : "demos";
-    console.log(`Cleaned up ${result.deletedCount} ${unit}`);
+    logger.info(`Cleaned up ${result.deletedCount} ${unit}`);
   } catch (error) {
-    console.error(`Demo cleanup failed:`, error);
+    logger.error(`Demo cleanup failed:`, error);
   }
 }
 

@@ -44,7 +44,7 @@ const registrationValidationRules = () => {
     emailValidation(),
     body("role")
       .isIn(["provider", "nonProvider"])
-      .withMessage("Role must either be 'provider' or 'nonProivder'"),
+      .withMessage("Role must be 'provider' or 'nonProvider'"),
   ];
 };
 

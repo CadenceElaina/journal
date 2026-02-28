@@ -2,6 +2,7 @@ const Journal = require("../models/journal");
 const User = require("../models/user");
 const demoRouter = require("express").Router();
 const config = require("../utils/config");
+const logger = require("../utils/logger");
 const { generateRandomAlphaNumericString } = require("../utils/middleware");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -48,7 +49,7 @@ demoRouter.post("/", async (request, response, next) => {
     }));
 
     const savedJournals = await Journal.insertMany(journalsToInsert);
-    console.log(`${savedJournals.length} journals were successfully saved.`);
+    logger.info(`${savedJournals.length} demo journals seeded`);
 
     //generate JWT token
     const userForToken = {
