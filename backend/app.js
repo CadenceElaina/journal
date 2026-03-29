@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
@@ -52,7 +53,9 @@ app.use(
   cors({
     origin:
       config.NODE_ENV === "production"
-        ? [process.env.FRONTEND_URL]
+        ? process.env.FRONTEND_URL
+          ? [process.env.FRONTEND_URL]
+          : false // Same-origin deployment — CORS not needed
         : ["http://localhost:5173", "http://localhost:3000"], // Vite default ports
     credentials: true, // Allow cookies/auth headers
     optionsSuccessStatus: 200,
@@ -60,7 +63,7 @@ app.use(
 );
 
 // 4. Standard Express middleware
-app.use(express.static("dist"));
+app.use(express.static(path.resolve(__dirname, "dist")));
 app.use(express.json());
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
@@ -80,6 +83,14 @@ app.use(
 app.use("/api/users", usersRouter);
 app.use("/api/demo", demoRouter);
 app.use("/api/email-verification", emailVerificationRouter);
+
+// SPA fallback — serve index.html for non-API routes (client-side routing)
+if (config.NODE_ENV === "production") {
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) return next();
+    res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+  });
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

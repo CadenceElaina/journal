@@ -182,9 +182,32 @@ Tests run against an in-memory MongoDB instance via `mongodb-memory-server` — 
 
 **59 integration tests across 4 suites:**
 
-| Suite          | Tests | Covers                                                                  |
-| -------------- | ----- | ----------------------------------------------------------------------- |
-| Auth           | 13    | Login, token rotation, refresh invalidation, account lockout, logout    |
-| Journals       | 25    | CRUD, ownership verification, pagination, search, sort, filter by tag/mood |
-| Users          | 15    | Registration validation, duplicate detection, email normalization, account deletion |
-| Demo           | 6     | Session creation, data seeding, isolation between sessions, access control |
+| Suite    | Tests | Covers                                                                              |
+| -------- | ----- | ----------------------------------------------------------------------------------- |
+| Auth     | 13    | Login, token rotation, refresh invalidation, account lockout, logout                |
+| Journals | 25    | CRUD, ownership verification, pagination, search, sort, filter by tag/mood          |
+| Users    | 15    | Registration validation, duplicate detection, email normalization, account deletion |
+| Demo     | 6     | Session creation, data seeding, isolation between sessions, access control          |
+
+---
+
+## Deployment
+
+### Render (one-click)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/CadenceElaina/journal)
+
+A `render.yaml` blueprint is included. Set the required environment variables in the Render dashboard after deploying.
+
+### Manual
+
+```bash
+# Build frontend → backend/dist
+npm install && npm run build
+
+# Install backend dependencies
+cd backend && npm install
+
+# Start (NODE_ENV=production serves frontend + API from one process)
+npm start
+```
