@@ -4,19 +4,21 @@ import { useAuth } from "../../auth/context/AuthContext";
 const DeleteAccountModal = ({ isOpen, onClose, onConfirmDelete }) => {
   const { user } = useAuth();
   const [confirmText, setConfirmText] = useState("");
+  const [password, setPassword] = useState("");
   const REQUIRED_TEXT = `${user.username}`;
-  // The delete button is disabled until the user types the exact required text
-  const isButtonDisabled = confirmText !== REQUIRED_TEXT;
+  // The delete button is disabled until the user types the exact required text and enters password
+  const isButtonDisabled = confirmText !== REQUIRED_TEXT || !password;
 
   function handleDelete() {
     if (!isButtonDisabled) {
-      onConfirmDelete();
-      handleClose(); // Close modal after deletion
+      onConfirmDelete(password);
+      handleClose();
     }
   }
 
   function handleClose() {
     setConfirmText("");
+    setPassword("");
     onClose();
   }
 
@@ -44,6 +46,16 @@ const DeleteAccountModal = ({ isOpen, onClose, onConfirmDelete }) => {
             type="text"
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
+          />
+        </div>
+
+        <div className="modal-input-section">
+          <label htmlFor="confirm-delete-password">Enter your password:</label>
+          <input
+            id="confirm-delete-password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
