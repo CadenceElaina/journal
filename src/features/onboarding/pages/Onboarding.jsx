@@ -49,12 +49,10 @@ const Onboarding = () => {
   };
 
   const handleNext = () => {
-    console.log("Next button clicked, moving from step", currentStep);
     nextStep();
   };
 
   const handleBack = () => {
-    console.log("Back button clicked, moving from step", currentStep);
     previousStep();
   };
 
@@ -62,11 +60,8 @@ const Onboarding = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("Form submitted, current step:", currentStep);
-
     // Only submit if we're on the final step
     if (currentStep !== ONBOARDING_STEPS.STEP_3) {
-      console.log("Prevented premature submission, current step:", currentStep);
       return;
     }
 

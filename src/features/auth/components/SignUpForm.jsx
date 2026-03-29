@@ -42,32 +42,33 @@ const SignUpForm = ({
         </div>
       </div>
 
-      {/* First Name */}
-      <div className="form-field">
-        <label htmlFor="firstName">First Name:</label>
-        <input
-          id="firstName"
-          name="firstName"
-          type="text"
-          value={formData.firstName}
-          onChange={handleChange}
-          className="form-input"
-          required
-        />
-      </div>
+      {/* First Name & Last Name */}
+      <div className="form-row">
+        <div className="form-field">
+          <label htmlFor="firstName">First Name:</label>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            value={formData.firstName}
+            onChange={handleChange}
+            className="form-input"
+            required
+          />
+        </div>
 
-      {/* Last Name */}
-      <div className="form-field">
-        <label htmlFor="lastName">Last Name:</label>
-        <input
-          id="lastName"
-          name="lastName"
-          type="text"
-          value={formData.lastName}
-          onChange={handleChange}
-          className="form-input"
-          required
-        />
+        <div className="form-field">
+          <label htmlFor="lastName">Last Name:</label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            value={formData.lastName}
+            onChange={handleChange}
+            className="form-input"
+            required
+          />
+        </div>
       </div>
 
       {/* Email */}
@@ -138,14 +139,14 @@ const SignUpForm = ({
         </div>
       )}
 
-      {/* Demo Button */}
-      <button type="button" onClick={handleDemoLogin} className="demo-button">
-        Try Demo Instead
-      </button>
-
       {/* Submit Button */}
       <button type="submit" disabled={isLoading} className="form-submit">
         {isLoading ? "Creating account..." : "Sign Up"}
+      </button>
+
+      {/* Demo Button */}
+      <button type="button" onClick={handleDemoLogin} className="demo-button">
+        Try Demo Instead
       </button>
     </form>
   );

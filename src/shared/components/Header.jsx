@@ -96,7 +96,7 @@ const Header = () => {
             <>
               <span className="username">{user.username || user.name}</span>
               <button onClick={logout} className="logout-button">
-                logout
+                Logout
               </button>
               {!user.isEmailVerified && !user.isDemo && (
                 <button

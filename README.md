@@ -2,6 +2,8 @@
 
 A full-stack journaling application built with the MERN stack, featuring production-grade authentication (JWT rotation, TOTP 2FA, account lockout), full-text search, and a rich text editor. Designed with a layered backend architecture and feature-based frontend organization.
 
+**Live:** [journal-yje6.onrender.com](https://journal-yje6.onrender.com)
+
 **Built with:** React 19 · Express v5 · MongoDB · JWT · Tiptap · Vite
 
 ---
