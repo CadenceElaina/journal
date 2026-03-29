@@ -33,11 +33,11 @@ export const ThemeProvider = ({ children }) => {
     root.style.setProperty("--button-secondary-bg", theme.buttonSecondaryBg);
     root.style.setProperty(
       "--button-secondary-bg-hover",
-      theme.buttonSecondaryBgHover
+      theme.buttonSecondaryBgHover,
     );
     root.style.setProperty(
       "--button-secondary-text",
-      theme.buttonSecondaryText
+      theme.buttonSecondaryText,
     );
     root.style.setProperty("--input-bg", theme.inputBg);
     root.style.setProperty("--input-border", theme.inputBorder);

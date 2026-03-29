@@ -178,4 +178,13 @@ cd backend
 npm test
 ```
 
-Tests run against an in-memory MongoDB instance via `mongodb-memory-server`.
+Tests run against an in-memory MongoDB instance via `mongodb-memory-server` — no external database required.
+
+**59 integration tests across 4 suites:**
+
+| Suite          | Tests | Covers                                                                  |
+| -------------- | ----- | ----------------------------------------------------------------------- |
+| Auth           | 13    | Login, token rotation, refresh invalidation, account lockout, logout    |
+| Journals       | 25    | CRUD, ownership verification, pagination, search, sort, filter by tag/mood |
+| Users          | 15    | Registration validation, duplicate detection, email normalization, account deletion |
+| Demo           | 6     | Session creation, data seeding, isolation between sessions, access control |

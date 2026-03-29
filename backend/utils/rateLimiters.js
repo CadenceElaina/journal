@@ -24,6 +24,7 @@ const authLimiter = rateLimit({
 const registrationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 3,
+  skip: skipInTest,
   message: "Too many accounts created from this IP, please try again later",
   standardHeaders: true,
   legacyHeaders: false,
@@ -36,6 +37,7 @@ const registrationLimiter = rateLimit({
 const emailVerificationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5,
+  skip: skipInTest,
   message: "Too many verification requests, please try again later",
   standardHeaders: true,
   legacyHeaders: false,
@@ -48,6 +50,7 @@ const emailVerificationLimiter = rateLimit({
 const twoFactorLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10,
+  skip: skipInTest,
   message: "Too many 2FA attempts, please try again later",
   standardHeaders: true,
   legacyHeaders: false,

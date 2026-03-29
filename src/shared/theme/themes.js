@@ -1,7 +1,7 @@
 export const themes = {
-  'light': {
-    name: 'Light',
-    icon: '☀️',
+  light: {
+    name: "Light",
+    icon: "☀️",
     bg: "#f9fafb",
     cardBg: "#ffffff",
     cardBorder: "#e5e7eb",
@@ -46,8 +46,8 @@ export const themes = {
     hoverBg: "#f3f4f6",
   },
   dark: {
-    name: 'Dark',
-    icon: '🌙',
+    name: "Dark",
+    icon: "🌙",
     bg: "#1c1410",
     cardBg: "#2d1b0e",
     cardBorder: "#d97706",
@@ -91,9 +91,9 @@ export const themes = {
     // Hover
     hoverBg: "#3d2415",
   },
-  'leather-bound': {
-    name: 'Leather Bound',
-    icon: '📖',
+  "leather-bound": {
+    name: "Leather Bound",
+    icon: "📖",
     bg: "#fef3c7",
     cardBg: "#fef3c7",
     cardBorder: "#78350f",
