@@ -208,28 +208,92 @@
 }
 
 /* Mood Wheel */
-.mood-wheel-button {
-  padding: 0.625rem 1.25rem;
+.mood-wheel-button,
+.toggle-mood-wheel {
+  padding: 0.5rem 1rem;
   background-color: var(--button-secondary-bg);
   color: var(--button-secondary-text);
   border: 1px solid var(--card-border);
   border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
-.mood-wheel-button:hover {
+.mood-wheel-button:hover,
+.toggle-mood-wheel:hover {
   background-color: var(--button-secondary-bg-hover);
 }
 
-.mood-wheel {
+.mood-wheel,
+.mood-wheel-container {
   background-color: var(--input-bg);
   border: 1px solid var(--card-border);
   border-radius: 0.75rem;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.primary-moods,
+.secondary-moods,
+.tertiary-moods {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.primary-moods small,
+.secondary-moods small,
+.tertiary-moods small {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.mood-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.mood-buttons button,
+.primary-mood,
+.secondary-mood,
+.tertiary-mood {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--card-border);
+  border-radius: 1rem;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.mood-buttons button:hover,
+.primary-mood:hover,
+.secondary-mood:hover,
+.tertiary-mood:hover {
+  background-color: var(--button-secondary-bg);
+  border-color: var(--accent);
+}
+
+.primary-mood.active,
+.secondary-mood.active {
+  background-color: var(--mood-bg);
+  border-color: var(--mood-border);
+  color: var(--mood-text);
+  font-weight: 600;
+}
+
+.tertiary-mood:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Form Actions */

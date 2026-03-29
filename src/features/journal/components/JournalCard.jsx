@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/JournalCard.css";
 
-const JournalCard = ({ journal, onEdit, onDelete, onView }) => {
+const JournalCard = ({ journal, onEdit, onDelete, onView, onTagClick, activeTags = [] }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -50,7 +50,12 @@ const JournalCard = ({ journal, onEdit, onDelete, onView }) => {
         {journal.tags && journal.tags.length > 0 && (
           <div className="tags">
             {journal.tags.map((tag, index) => (
-              <span key={index} className="tag">
+              <span
+                key={index}
+                className={`tag${activeTags.includes(tag) ? " tag-active" : ""}${onTagClick ? " tag-clickable" : ""}`}
+                onClick={() => onTagClick && onTagClick(tag)}
+                title={onTagClick ? `Filter by "${tag}"` : undefined}
+              >
                 {tag}
               </span>
             ))}

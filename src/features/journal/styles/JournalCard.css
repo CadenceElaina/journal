@@ -107,8 +107,20 @@
   border: 1px solid var(--card-border);
 }
 
-.tag:hover {
+.tag-clickable {
+  cursor: pointer;
+}
+
+.tag-clickable:hover {
   background-color: var(--button-secondary-bg-hover);
+  border-color: var(--accent);
+}
+
+.tag-active {
+  background-color: var(--mood-bg);
+  color: var(--mood-text);
+  border-color: var(--mood-border);
+  font-weight: 600;
 }
 
 .mood {

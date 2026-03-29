@@ -12,6 +12,7 @@ const Dashboard = () => {
     searchAndFilters,
     switchView,
     updateSearchTerm,
+    updateFilters,
     updateSort,
     resetFilters,
   } = useJournals();
@@ -77,6 +78,28 @@ const Dashboard = () => {
             Reset
           </button>
         </div>
+
+        {searchAndFilters.tags && searchAndFilters.tags.length > 0 && (
+          <div className="active-filters">
+            <span className="active-filters-label">Filtering by tag:</span>
+            {searchAndFilters.tags.map((tag) => (
+              <span key={tag} className="active-tag-chip">
+                {tag}
+                <button
+                  onClick={() =>
+                    updateFilters({
+                      ...searchAndFilters,
+                      tags: searchAndFilters.tags.filter((t) => t !== tag),
+                    })
+                  }
+                  aria-label={`Remove ${tag} filter`}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
 
       <JournalList showControls={false} />

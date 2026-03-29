@@ -12,9 +12,18 @@ const JournalList = ({ showControls = true }) => {
     isLoading,
     error,
     updatePage,
+    updateFilters,
+    searchAndFilters,
     clearError,
     removeJournal,
   } = useJournals();
+
+  const handleTagClick = (tag) => {
+    const currentTags = searchAndFilters.tags || [];
+    if (!currentTags.includes(tag)) {
+      updateFilters({ ...searchAndFilters, tags: [...currentTags, tag] });
+    }
+  };
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
 
@@ -77,6 +86,8 @@ const JournalList = ({ showControls = true }) => {
                 onView={handleView}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onTagClick={handleTagClick}
+                activeTags={searchAndFilters.tags || []}
               />
             ))}
           </div>
