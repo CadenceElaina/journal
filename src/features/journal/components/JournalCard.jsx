@@ -1,7 +1,14 @@
 import React from "react";
 import "../styles/JournalCard.css";
 
-const JournalCard = ({ journal, onEdit, onDelete, onView, onTagClick, activeTags = [] }) => {
+const JournalCard = ({
+  journal,
+  onEdit,
+  onDelete,
+  onView,
+  onTagClick,
+  activeTags = [],
+}) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",

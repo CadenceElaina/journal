@@ -20,9 +20,21 @@ journalsRouter.get("/", async (request, response, next) => {
     // --- 2. BUILD THE DYNAMIC QUERY OBJECT ---
     const queryConditions = [];
 
-    // Term to search in Title and Content of entries
+    // Term to search across title, content, tags, moods, and custom moods
     if (term) {
-      queryConditions.push({ $text: { $search: term } });
+      const termRegex = new RegExp(
+        term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+        "i",
+      );
+      queryConditions.push({
+        $or: [
+          { title: termRegex },
+          { content: termRegex },
+          { tags: termRegex },
+          { moods: termRegex },
+          { custom_moods: termRegex },
+        ],
+      });
     }
 
     // Tags Filter
@@ -234,7 +246,7 @@ journalsRouter.put("/:id", async (request, response, next) => {
     const result = await Journal.findByIdAndUpdate(
       request.params.id,
       updatedJournal,
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     response.json(result);
