@@ -65,7 +65,7 @@ backend/
 ├── utils/           # Middleware, config, validators, rate limiters, mailer, logger
 
 src/
-├── features/        # Feature modules (auth, journal, settings, demo, onboarding, relationships)
+├── features/        # Feature modules (auth, journal, settings, demo, onboarding)
 │   └── <feature>/   # components/, context/, hooks/, pages/, styles/, utils/, constants/
 ├── routes/          # Route config with auth protection and role-based access
 ├── services/        # API service layer (Axios interceptors, token refresh)
@@ -151,7 +151,7 @@ cd journal
 # Backend
 cd backend
 npm install
-cp .env.example .env  # Then fill in values
+# Create .env with the variables listed below
 npm run dev
 
 # Frontend (separate terminal)
