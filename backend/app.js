@@ -1,13 +1,9 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
-const nodeCron = require("node-cron");
 const helmet = require("helmet");
 const config = require("./utils/config");
-const logger = require("./utils/logger");
 const middleware = require("./utils/middleware");
-const demoCleanup = require("./utils/demoCleanup");
 
 const authRouter = require("./controllers/auth");
 const journalsRouter = require("./controllers/journals");
@@ -15,23 +11,6 @@ const usersRouter = require("./controllers/users");
 const demoRouter = require("./controllers/demo");
 const emailVerificationRouter = require("./controllers/emailVerification");
 const twoFactorRouter = require("./controllers/twoFactor");
-
-logger.info("connecting to", config.MONGODB_URI);
-
-mongoose
-  .connect(config.MONGODB_URI)
-  .then(() => {
-    logger.info("connected to MongoDB");
-  })
-  .then(() => {
-    // cron job every 15 minutes we check if demo expired and cleanup demo users + their journals
-    nodeCron.schedule("*/15 * * * *", () => {
-      demoCleanup.cleanUpExpiredDemos();
-    });
-  })
-  .catch((error) => {
-    logger.error("error connection to MongoDB:", error.message);
-  });
 
 // ============================================================================
 // SECURITY MIDDLEWARE (Order matters!)
@@ -54,7 +33,7 @@ app.use(
       includeSubDomains: true,
       preload: true,
     },
-  })
+  }),
 );
 
 // 2. HTTPS enforcement - redirect HTTP to HTTPS in production
@@ -77,7 +56,7 @@ app.use(
         : ["http://localhost:5173", "http://localhost:3000"], // Vite default ports
     credentials: true, // Allow cookies/auth headers
     optionsSuccessStatus: 200,
-  })
+  }),
 );
 
 // 4. Standard Express middleware
@@ -96,7 +75,7 @@ app.use(
   "/api/journals",
   middleware.userExtractor,
   middleware.demoActivityTracker,
-  journalsRouter
+  journalsRouter,
 );
 app.use("/api/users", usersRouter);
 app.use("/api/demo", demoRouter);

@@ -1,4 +1,8 @@
 const rateLimit = require("express-rate-limit");
+const config = require("./config");
+
+// Skip rate limiting in test environment
+const skipInTest = () => config.NODE_ENV === "test";
 
 /**
  * Rate limiter for authentication endpoints (login, 2FA)
@@ -7,6 +11,7 @@ const rateLimit = require("express-rate-limit");
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5,
+  skip: skipInTest,
   message: "Too many authentication attempts, please try again later",
   standardHeaders: true,
   legacyHeaders: false,
