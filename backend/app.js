@@ -26,13 +26,13 @@ app.use(
         scriptSrc: ["'self'"],
         imgSrc: ["'self'", "data:", "https:"],
         connectSrc: ["'self'"], // API calls
+        upgradeInsecureRequests: config.NODE_ENV === "production" ? [] : null, // Disable in dev
       },
     },
-    hsts: {
-      maxAge: 31536000, // 1 year
-      includeSubDomains: true,
-      preload: true,
-    },
+    hsts:
+      config.NODE_ENV === "production"
+        ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+        : false, // Disable HSTS in development
   }),
 );
 

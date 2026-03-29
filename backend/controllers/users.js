@@ -34,7 +34,7 @@ usersRouter.get(
       // Only return non-sensitive user info
       const users = await User.find({})
         .select(
-          "firstName lastName username role prefix suffix providerProfile.specialty -_id"
+          "firstName lastName username role prefix suffix providerProfile.specialty -_id",
         )
         .lean();
 
@@ -42,7 +42,7 @@ usersRouter.get(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // Register new user
@@ -106,7 +106,7 @@ usersRouter.post(
         await sendEmail(
           email,
           "Email Verification Code",
-          `Welcome! Your email verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.`
+          `Welcome! Your email verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.`,
         );
       } catch (emailError) {
         logger.error("Failed to send verification email:", emailError);
@@ -117,7 +117,7 @@ usersRouter.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // GET /api/users/profile - Get current user profile
@@ -136,7 +136,7 @@ usersRouter.get(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // PATCH /api/users/profile - Update user profile (name, username)
@@ -219,7 +219,7 @@ usersRouter.patch(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // PATCH /api/users/profile/password - Change password
@@ -246,7 +246,7 @@ usersRouter.patch(
       // Verify current password
       const passwordCorrect = await bcrypt.compare(
         currentPassword,
-        user.passwordHash
+        user.passwordHash,
       );
       if (!passwordCorrect) {
         return response
@@ -270,7 +270,7 @@ usersRouter.patch(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // PATCH /api/users/profile/email - Change email
@@ -328,7 +328,7 @@ usersRouter.patch(
         await sendEmail(
           email,
           "Verify Your New Email Address",
-          `You requested to change your email address. Your verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.\n\nIf you did not request this change, please ignore this email.`
+          `You requested to change your email address. Your verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.\n\nIf you did not request this change, please ignore this email.`,
         );
       } catch (emailError) {
         logger.error("Failed to send verification email:", emailError);
@@ -350,7 +350,7 @@ usersRouter.patch(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // DELETE /api/users/account - Delete account
@@ -395,7 +395,7 @@ usersRouter.delete(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // PATCH /api/users/profile/provider - Complete provider onboarding
@@ -444,7 +444,7 @@ usersRouter.patch(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 module.exports = usersRouter;

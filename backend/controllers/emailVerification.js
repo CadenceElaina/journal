@@ -62,7 +62,7 @@ emailVerificationRouter.post(
         await sendEmail(
           email,
           "Email Verification Code",
-          `Your email verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.`
+          `Your email verification code is: ${verificationCode}\n\nThis code will expire in 15 minutes.`,
         );
       } catch (emailError) {
         logger.error("Failed to send verification email:", emailError);
@@ -73,7 +73,7 @@ emailVerificationRouter.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 // Verify code
@@ -149,7 +149,7 @@ emailVerificationRouter.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 module.exports = emailVerificationRouter;

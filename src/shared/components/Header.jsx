@@ -95,7 +95,7 @@ const Header = () => {
           {user && (
             <>
               <span className="username">{user.username || user.name}</span>
-              <button onClick={logout}>logout</button>
+              <button onClick={logout} className="logout-button">logout</button>
               {!user.isEmailVerified && !user.isDemo && (
                 <button
                   onClick={handleVerifyEmail}

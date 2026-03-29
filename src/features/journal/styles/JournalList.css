@@ -79,7 +79,7 @@
 .search-container input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .sort-container select {
@@ -155,8 +155,8 @@
 
 /* Error State */
 .error-state {
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: 0.75rem;
   padding: 1.5rem;
   text-align: center;
@@ -164,14 +164,14 @@
 
 .error-state p {
   margin: 0 0 1rem 0;
-  color: #dc2626;
+  color: var(--error-text);
   font-weight: 500;
 }
 
 .error-state button {
   padding: 0.625rem 1.25rem;
-  background-color: #dc2626;
-  color: white;
+  background-color: var(--error-text);
+  color: var(--button-text);
   border: none;
   border-radius: 0.5rem;
   font-weight: 600;
@@ -309,12 +309,12 @@
 }
 
 .confirm-delete {
-  background-color: #dc2626;
-  color: white;
+  background-color: var(--error-text);
+  color: var(--button-text);
 }
 
 .confirm-delete:hover {
-  background-color: #b91c1c;
+  opacity: 0.85;
 }
 
 .cancel-delete {

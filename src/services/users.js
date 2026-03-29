@@ -7,10 +7,13 @@ const signup = async (user) => {
     const response = await api.post(baseUrl, user);
     return { success: true, data: response.data };
   } catch (error) {
-    return {
-      success: false,
-      error: error.response?.data?.error || "Signup failed",
-    };
+    const data = error.response?.data;
+    const message =
+      data?.error ||
+      (data?.errors?.length
+        ? data.errors.map((e) => e.message).join(", ")
+        : "Signup failed");
+    return { success: false, error: message };
   }
 };
 

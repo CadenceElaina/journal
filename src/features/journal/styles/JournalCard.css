@@ -31,8 +31,8 @@
 }
 
 .shared-badge {
-  background-color: #10b981;
-  color: white;
+  background-color: var(--shared-badge-bg);
+  color: var(--shared-badge-text);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.25rem 0.75rem;
@@ -112,13 +112,13 @@
 }
 
 .mood {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background-color: var(--mood-bg);
+  color: var(--mood-text);
+  border: 1px solid var(--mood-border);
 }
 
 .mood:hover {
-  background-color: rgba(59, 130, 246, 0.15);
+  opacity: 0.85;
 }
 
 /* Card Actions */
@@ -160,14 +160,13 @@
 }
 
 .journal-card-actions button:last-child {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
 }
 
 .journal-card-actions button:last-child:hover {
-  background-color: #fecaca;
-  border-color: #fca5a5;
+  opacity: 0.85;
 }
 
 /* Responsive */

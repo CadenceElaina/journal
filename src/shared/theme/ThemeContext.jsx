@@ -6,13 +6,22 @@ const ThemeContext = createContext();
 
 // 2. Create the Provider component
 export const ThemeProvider = ({ children }) => {
-  const [currentTheme, setCurrentTheme] = useState("leather-bound");
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    const saved = localStorage.getItem("journal-theme");
+    return saved && themes[saved] ? saved : "leather-bound";
+  });
   const theme = themes[currentTheme];
+
+  // Persist theme selection
+  useEffect(() => {
+    localStorage.setItem("journal-theme", currentTheme);
+  }, [currentTheme]);
 
   // Apply CSS variables when theme changes
   useEffect(() => {
     const root = document.documentElement;
 
+    // Core colors
     root.style.setProperty("--bg", theme.bg);
     root.style.setProperty("--card-bg", theme.cardBg);
     root.style.setProperty("--card-border", theme.cardBorder);
@@ -35,6 +44,34 @@ export const ThemeProvider = ({ children }) => {
     root.style.setProperty("--input-text", theme.inputText);
     root.style.setProperty("--accent", theme.accent);
     root.style.setProperty("--divider", theme.divider);
+
+    // Semantic status colors
+    root.style.setProperty("--success-bg", theme.successBg);
+    root.style.setProperty("--success-border", theme.successBorder);
+    root.style.setProperty("--success-text", theme.successText);
+    root.style.setProperty("--error-bg", theme.errorBg);
+    root.style.setProperty("--error-border", theme.errorBorder);
+    root.style.setProperty("--error-text", theme.errorText);
+    root.style.setProperty("--warning-bg", theme.warningBg);
+    root.style.setProperty("--warning-border", theme.warningBorder);
+    root.style.setProperty("--warning-text", theme.warningText);
+
+    // Badge colors
+    root.style.setProperty("--mood-bg", theme.moodBg);
+    root.style.setProperty("--mood-border", theme.moodBorder);
+    root.style.setProperty("--mood-text", theme.moodText);
+    root.style.setProperty("--custom-mood-bg", theme.customMoodBg);
+    root.style.setProperty("--custom-mood-border", theme.customMoodBorder);
+    root.style.setProperty("--custom-mood-text", theme.customMoodText);
+    root.style.setProperty("--tag-chip-bg", theme.tagChipBg);
+    root.style.setProperty("--tag-chip-border", theme.tagChipBorder);
+    root.style.setProperty("--tag-chip-text", theme.tagChipText);
+    root.style.setProperty("--shared-badge-bg", theme.sharedBadgeBg);
+    root.style.setProperty("--shared-badge-text", theme.sharedBadgeText);
+
+    // Focus & hover
+    root.style.setProperty("--focus-ring", theme.focusRing);
+    root.style.setProperty("--hover-bg", theme.hoverBg);
   }, [theme]);
 
   const value = {

@@ -12,11 +12,10 @@
   flex-direction: column;
 }
 
-.content-conatiner {
-  /* Note: Keep typo "conatiner" as it's in the JSX */
+.content-container {
   flex: 1;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0;
 }

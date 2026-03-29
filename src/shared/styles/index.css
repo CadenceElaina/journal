@@ -1,12 +1,16 @@
+/* Base element resets — extends global.css */
 a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s;
 }
+
 a:hover {
+  color: var(--text-primary);
 }
 
-body {
-}
-
-h1 {
+button {
+  font-family: inherit;
 }
 
 button {

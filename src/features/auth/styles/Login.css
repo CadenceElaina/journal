@@ -69,7 +69,7 @@ form {
 .form-input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .form-input::placeholder {
@@ -184,10 +184,10 @@ form a:hover {
 /* Error Messages */
 .error-message {
   padding: 0.875rem 1rem;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: 0.5rem;
-  color: #dc2626;
+  color: var(--error-text);
   font-size: 0.95rem;
   font-weight: 500;
   text-align: center;
@@ -196,10 +196,10 @@ form a:hover {
 /* Success Messages */
 .success-message {
   padding: 0.875rem 1rem;
-  background-color: #d1fae5;
-  border: 1px solid #a7f3d0;
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
   border-radius: 0.5rem;
-  color: #059669;
+  color: var(--success-text);
   font-size: 0.95rem;
   font-weight: 500;
   text-align: center;
@@ -232,11 +232,11 @@ form a:hover {
 }
 
 .validation-rule.valid {
-  color: #059669;
+  color: var(--success-text);
 }
 
 .validation-rule.invalid {
-  color: #dc2626;
+  color: var(--error-text);
 }
 
 .validation-rule .icon {

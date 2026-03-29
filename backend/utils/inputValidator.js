@@ -8,7 +8,7 @@ const usernameValidation = () => {
     .withMessage("Username must be 3-20 characters long")
     .matches(/^[a-zA-Z0-9_-]+$/)
     .withMessage(
-      "Username can only contain letters, numbers, underscores, and hyphens"
+      "Username can only contain letters, numbers, underscores, and hyphens",
     );
 };
 
@@ -31,7 +31,7 @@ const nameValidation = (fieldName) => {
     .withMessage(`${fieldName} must be less than 50 characters`)
     .matches(/^[\p{L}\s'-]+$/u)
     .withMessage(
-      `${fieldName} can only contain letters, spaces, hyphens, and apostrophes`
+      `${fieldName} can only contain letters, spaces, hyphens, and apostrophes`,
     );
 };
 

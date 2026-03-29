@@ -85,8 +85,8 @@
 }
 
 .shared-badge {
-  background-color: #10b981;
-  color: white;
+  background-color: var(--shared-badge-bg);
+  color: var(--shared-badge-text);
   font-size: 0.75rem;
   font-weight: 600;
   padding: 0.375rem 1rem;
@@ -154,15 +154,15 @@
 }
 
 .mood {
-  background-color: rgba(59, 130, 246, 0.1);
-  color: #2563eb;
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  background-color: var(--mood-bg);
+  color: var(--mood-text);
+  border: 1px solid var(--mood-border);
 }
 
 .custom-mood {
-  background-color: rgba(168, 85, 247, 0.1);
-  color: #7c3aed;
-  border: 1px solid rgba(168, 85, 247, 0.2);
+  background-color: var(--custom-mood-bg);
+  color: var(--custom-mood-text);
+  border: 1px solid var(--custom-mood-border);
 }
 
 /* Journal Content */

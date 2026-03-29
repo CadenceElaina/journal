@@ -45,7 +45,7 @@ twoFactorRouter.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 twoFactorRouter.post(
@@ -83,12 +83,12 @@ twoFactorRouter.post(
 
       // Generate backup codes (10 codes)
       const backupCodes = Array.from({ length: 10 }, () =>
-        Math.random().toString(36).substring(2, 10).toUpperCase()
+        Math.random().toString(36).substring(2, 10).toUpperCase(),
       );
 
       // Hash backup codes before storing
       const hashedBackupCodes = await Promise.all(
-        backupCodes.map((code) => bcrypt.hash(code, 10))
+        backupCodes.map((code) => bcrypt.hash(code, 10)),
       );
 
       user.twoFactorEnabled = true;
@@ -103,7 +103,7 @@ twoFactorRouter.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 twoFactorRouter.post(
@@ -217,7 +217,7 @@ twoFactorRouter.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 twoFactorRouter.post(
@@ -264,7 +264,7 @@ twoFactorRouter.post(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 module.exports = twoFactorRouter;

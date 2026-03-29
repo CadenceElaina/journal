@@ -47,7 +47,7 @@
 .form-field input[type="text"]:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 /* Word Count */
@@ -131,21 +131,21 @@
 }
 
 .tag-chip {
-  background-color: #fbbf24;
-  color: #78350f;
-  border: 1px solid #f59e0b;
+  background-color: var(--tag-chip-bg);
+  color: var(--tag-chip-text);
+  border: 1px solid var(--tag-chip-border);
 }
 
 .mood-chip {
-  background-color: rgba(59, 130, 246, 0.15);
-  color: #2563eb;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  background-color: var(--mood-bg);
+  color: var(--mood-text);
+  border: 1px solid var(--mood-border);
 }
 
 .custom-mood-chip {
-  background-color: rgba(168, 85, 247, 0.15);
-  color: #7c3aed;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background-color: var(--custom-mood-bg);
+  color: var(--custom-mood-text);
+  border: 1px solid var(--custom-mood-border);
 }
 
 .tag-chip button,
@@ -277,22 +277,22 @@
 }
 
 .reset-button {
-  background-color: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fecaca !important;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border) !important;
 }
 
 .reset-button:hover {
-  background-color: #fecaca;
+  opacity: 0.85;
 }
 
 /* Messages */
 .form-error {
   padding: 0.875rem 1rem;
-  background-color: #fee2e2;
-  border: 1px solid #fecaca;
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: 0.5rem;
-  color: #dc2626;
+  color: var(--error-text);
   font-size: 0.95rem;
   font-weight: 500;
   margin-bottom: 1rem;
@@ -300,10 +300,10 @@
 
 .form-success {
   padding: 0.875rem 1rem;
-  background-color: #d1fae5;
-  border: 1px solid #a7f3d0;
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
   border-radius: 0.5rem;
-  color: #059669;
+  color: var(--success-text);
   font-size: 0.95rem;
   font-weight: 500;
   margin-bottom: 1rem;

@@ -66,7 +66,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => Promise.reject(error),
 );
 
 // RESPONSE INTERCEPTOR: Handle 401 errors with automatic token refresh
@@ -88,7 +88,7 @@ api.interceptors.response.use(
     } else {
       return handleRefreshWithLocalStorage(originalRequest);
     }
-  }
+  },
 );
 
 // Strategy 1: Web Locks API (prevents concurrent refresh across tabs via browser-level lock)
@@ -101,12 +101,12 @@ async function handleRefreshWithWebLocks(originalRequest) {
         if (!lock) {
           await waitForTokenUpdate();
           originalRequest.headers.Authorization = `Bearer ${localStorage.getItem(
-            "accessToken"
+            "accessToken",
           )}`;
           return api(originalRequest);
         }
         return await performTokenRefresh(originalRequest);
-      }
+      },
     );
   } catch (lockError) {
     return Promise.reject(lockError);

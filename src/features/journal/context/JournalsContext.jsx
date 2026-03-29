@@ -186,7 +186,7 @@ export const JournalsProvider = ({ children }) => {
 
       // Update local state
       setJournals(
-        (prev) => prev.map((journal) => (journal.id === id ? data : journal)) // if id of existing journal matches the one we need to update - replace it with updated value else keep original
+        (prev) => prev.map((journal) => (journal.id === id ? data : journal)), // if id of existing journal matches the one we need to update - replace it with updated value else keep original
       );
 
       setIsLoading(false);

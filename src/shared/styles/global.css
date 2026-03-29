@@ -31,9 +31,34 @@
   /* Additional utility variables */
   --primary-color: #78350f;
   --primary-hover: #92400e;
-  --success-color: #10b981;
-  --error-color: #dc2626;
-  --warning-color: #f59e0b;
+
+  /* Semantic status colors (overridden by theme) */
+  --success-bg: #d1fae5;
+  --success-border: #a7f3d0;
+  --success-text: #059669;
+  --error-bg: #fee2e2;
+  --error-border: #fecaca;
+  --error-text: #dc2626;
+  --warning-bg: #fef3c7;
+  --warning-border: #fde68a;
+  --warning-text: #d97706;
+
+  /* Badge colors (overridden by theme) */
+  --mood-bg: rgba(59, 130, 246, 0.1);
+  --mood-border: rgba(59, 130, 246, 0.2);
+  --mood-text: #2563eb;
+  --custom-mood-bg: rgba(168, 85, 247, 0.1);
+  --custom-mood-border: rgba(168, 85, 247, 0.2);
+  --custom-mood-text: #7c3aed;
+  --tag-chip-bg: #e0e7ff;
+  --tag-chip-border: #c7d2fe;
+  --tag-chip-text: #4338ca;
+  --shared-badge-bg: #10b981;
+  --shared-badge-text: #ffffff;
+
+  /* Focus & hover */
+  --focus-ring: rgba(59, 130, 246, 0.3);
+  --hover-bg: #f3f4f6;
 
   /* Spacing scale */
   --spacing-xs: 0.25rem;
@@ -127,7 +152,7 @@ body {
 .input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .textarea {
@@ -147,7 +172,7 @@ body {
 .textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 /* Divider */
