@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
 import onboardingService from "../../../services/onboarding";
-import { useAuth } from "../../auth/context/AuthContext";
 
 const OnboardingContext = createContext(null);
 
@@ -12,7 +11,6 @@ const ONBOARDING_STEPS = {
 };
 
 export const OnboardingProvider = ({ children }) => {
-  const { tokens } = useAuth();
   const [currentStep, setCurrentStep] = useState(ONBOARDING_STEPS.STEP_1);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -46,8 +44,6 @@ export const OnboardingProvider = ({ children }) => {
     setError(null);
 
     try {
-      // Set the token before making the API call
-      onboardingService.setToken(tokens.token);
       const result = await onboardingService.completeOnboarding(formData);
       setCurrentStep(ONBOARDING_STEPS.COMPLETE);
       return { success: true, data: result };
