@@ -86,7 +86,7 @@ app.use("/api/email-verification", emailVerificationRouter);
 
 // SPA fallback — serve index.html for non-API routes (client-side routing)
 if (config.NODE_ENV === "production") {
-  app.get("*", (req, res, next) => {
+  app.get("/{*splat}", (req, res, next) => {
     if (req.path.startsWith("/api")) return next();
     res.sendFile(path.resolve(__dirname, "dist", "index.html"));
   });
