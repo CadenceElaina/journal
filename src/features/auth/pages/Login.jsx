@@ -9,7 +9,13 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { login, loginAsDemo } = useAuth();
+  // 2FA state
+  const [requires2FA, setRequires2FA] = useState(false);
+  const [tempToken, setTempToken] = useState(null);
+  const [twoFactorCode, setTwoFactorCode] = useState("");
+  const [useBackupCode, setUseBackupCode] = useState(false);
+
+  const { login, verify2FA, loginAsDemo } = useAuth();
   const navigate = useNavigate();
 
   function handleChange(e) {
@@ -32,6 +38,29 @@ const Login = () => {
 
     if (result.success) {
       navigate("/");
+    } else if (result.requires2FA) {
+      setRequires2FA(true);
+      setTempToken(result.tempToken);
+    } else {
+      setError(result.error);
+    }
+  }
+
+  async function handle2FASubmit(e) {
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
+
+    const result = await verify2FA(
+      tempToken,
+      useBackupCode ? null : twoFactorCode,
+      useBackupCode ? twoFactorCode : null,
+    );
+
+    setIsLoading(false);
+
+    if (result.success) {
+      navigate("/");
     } else {
       setError(result.error);
     }
@@ -47,6 +76,70 @@ const Login = () => {
     } else {
       setError(result.error);
     }
+  }
+
+  if (requires2FA) {
+    return (
+      <div className="login-form-container">
+        <h2>Two-Factor Authentication</h2>
+        <form onSubmit={handle2FASubmit}>
+          <p>
+            {useBackupCode
+              ? "Enter a backup code to continue."
+              : "Enter the 6-digit code from your authenticator app."}
+          </p>
+
+          <div className="form-field">
+            <label htmlFor="twoFactorCode">
+              {useBackupCode ? "Backup Code:" : "Authentication Code:"}
+            </label>
+            <input
+              name="twoFactorCode"
+              type="text"
+              value={twoFactorCode}
+              onChange={(e) => setTwoFactorCode(e.target.value)}
+              className="form-input"
+              autoComplete="one-time-code"
+              autoFocus
+              required
+            />
+          </div>
+
+          {error && <div className="error-message">{error}</div>}
+
+          <button type="submit" disabled={isLoading} className="form-submit">
+            {isLoading ? "Verifying..." : "Verify"}
+          </button>
+
+          <button
+            type="button"
+            className="demo-button"
+            onClick={() => {
+              setUseBackupCode(!useBackupCode);
+              setTwoFactorCode("");
+              setError(null);
+            }}
+          >
+            {useBackupCode
+              ? "Use authenticator code instead"
+              : "Use a backup code instead"}
+          </button>
+
+          <button
+            type="button"
+            className="demo-button"
+            onClick={() => {
+              setRequires2FA(false);
+              setTempToken(null);
+              setTwoFactorCode("");
+              setError(null);
+            }}
+          >
+            Back to login
+          </button>
+        </form>
+      </div>
+    );
   }
 
   return (
@@ -95,8 +188,8 @@ const Login = () => {
         <button type="submit" disabled={isLoading} className="form-submit">
           {isLoading ? "Logging in..." : "Login"}
         </button>
-        <Link to="/reset">Forgot password?</Link>
-        <Link to="/signup">Sign Up</Link>
+        <Link to="/auth/reset-password">Forgot password?</Link>
+        <Link to="/auth/signup">Sign Up</Link>
       </form>
     </div>
   );

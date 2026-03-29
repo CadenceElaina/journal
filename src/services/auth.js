@@ -46,6 +46,15 @@ const createDemoSession = async () => {
   return response.data;
 };
 
+const verify2FALogin = async (tempToken, twoFactorToken, backupCode) => {
+  const response = await axios.post(`${baseUrl}/../2fa/verify-login`, {
+    tempToken,
+    twoFactorToken: twoFactorToken || undefined,
+    backupCode: backupCode || undefined,
+  });
+  return response.data;
+};
+
 export default {
   login,
   logout,
@@ -54,4 +63,5 @@ export default {
   verifyResetCode,
   resetPassword,
   createDemoSession,
+  verify2FALogin,
 };

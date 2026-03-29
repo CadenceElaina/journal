@@ -42,6 +42,11 @@ export const AuthProvider = ({ children }) => {
       const data = await authService.login(credentials);
       setIsLoading(false);
 
+      // If 2FA is required, return tempToken so the UI can prompt for the code
+      if (data.requires2FA) {
+        return { success: false, requires2FA: true, tempToken: data.tempToken };
+      }
+
       const userData = {
         name: data.name,
         username: data.username,
@@ -73,6 +78,46 @@ export const AuthProvider = ({ children }) => {
         success: false,
         error: errorMsg || "Login failed",
       };
+    }
+  };
+
+  const verify2FA = async (tempToken, twoFactorToken, backupCode) => {
+    try {
+      setIsLoading(true);
+      const data = await authService.verify2FALogin(
+        tempToken,
+        twoFactorToken,
+        backupCode,
+      );
+      setIsLoading(false);
+
+      const userData = {
+        name: data.name,
+        username: data.username,
+        email: data.email,
+        role: data.role,
+        isEmailVerified: data.isEmailVerified || false,
+      };
+
+      const tokenData = {
+        accessToken: data.token,
+        refreshToken: data.refreshToken,
+      };
+
+      setUser(userData);
+      setTokens(tokenData);
+      setStatus(AUTH_STATUS.LOGGED_IN);
+
+      localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("accessToken", data.token);
+      localStorage.setItem("refreshToken", data.refreshToken);
+
+      return { success: true, data: userData };
+    } catch (error) {
+      setIsLoading(false);
+      const errorMsg = error.response?.data?.error || "2FA verification failed";
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     }
   };
 
@@ -182,6 +227,7 @@ export const AuthProvider = ({ children }) => {
     setError,
     AUTH_STATUS,
     login,
+    verify2FA,
     loginAsDemo,
     logout,
     refresh,
