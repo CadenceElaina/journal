@@ -54,13 +54,13 @@ const SignUp = () => {
 
     if (!/[a-z]/.test(password)) {
       validationErrors.push(
-        "Password must contain at least one lowercase letter"
+        "Password must contain at least one lowercase letter",
       );
     }
 
     if (!/[A-Z]/.test(password)) {
       validationErrors.push(
-        "Password must contain at least one uppercase letter"
+        "Password must contain at least one uppercase letter",
       );
     }
 
@@ -70,7 +70,7 @@ const SignUp = () => {
 
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       validationErrors.push(
-        "Password must contain at least one special character"
+        "Password must contain at least one special character",
       );
     }
 
@@ -141,18 +141,20 @@ if (password) {
 
   return (
     <div className="auth-page">
-      <h2>Create Your Account</h2>
-      <SignUpForm
-        formData={formData}
-        showPassword={showPassword}
-        setShowPassword={setShowPassword}
-        handleChange={handleChange}
-        handleRoleChange={handleRoleChange}
-        handleSubmit={handleSubmit}
-        handleDemoLogin={handleDemoLogin}
-        isLoading={isLoading}
-        error={error}
-      />
+      <div className="signup-form-container">
+        <h2>Create Your Account</h2>
+        <SignUpForm
+          formData={formData}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          handleChange={handleChange}
+          handleRoleChange={handleRoleChange}
+          handleSubmit={handleSubmit}
+          handleDemoLogin={handleDemoLogin}
+          isLoading={isLoading}
+          error={error}
+        />
+      </div>
     </div>
   );
 };

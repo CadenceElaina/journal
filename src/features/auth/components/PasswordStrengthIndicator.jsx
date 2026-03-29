@@ -59,42 +59,28 @@ const PasswordStrengthIndicator = ({ password }) => {
 
   return (
     <div className="password-strength-indicator">
-      <div className={`password-strength-indicator-bar-${percentage}`}>
+      <div className="password-strength-bar">
         <div
+          className="password-strength-bar-fill"
           style={{
             width: `${percentage}%`,
-            height: "100%",
             backgroundColor: color,
-            transition: "all 0.3s ease",
           }}
         />
       </div>
-      <div>
-        <span>{label}</span>
-        {/*         
-    If we require a level 3 or higher we should notify user it is a requirement
-{isWeak && (
-          <span
-            style={{ fontSize: "11px", color: "#d32f2f", marginLeft: "8px" }}
-          >
-            ⚠️ Password must be "Good" or "Strong" to register
-          </span>
-        )} */}
-        <span>{strength.feedback.warning}</span>
-      </div>
-
-      <div>
-        {/* Show suggestions but don't require them */}
-        {strength.feedback.suggestions.length > 0 && (
-          <div className="password-strength-indicator-suggestion-list">
-            {strength.feedback.suggestions.map((suggestion, index) => (
-              <p key={index} className="password-strength-indicator-suggestion">
-                {suggestion}
-              </p>
-            ))}
-          </div>
-        )}
-      </div>
+      <span className="password-strength-label" style={{ color }}>
+        {label}
+      </span>
+      {strength.feedback.warning && (
+        <p className="password-strength-warning">{strength.feedback.warning}</p>
+      )}
+      {strength.feedback.suggestions.length > 0 && (
+        <ul className="password-strength-suggestions">
+          {strength.feedback.suggestions.map((suggestion, index) => (
+            <li key={index}>{suggestion}</li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
