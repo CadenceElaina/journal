@@ -77,7 +77,13 @@ const PasswordReset = () => {
         <div className="reset-form-container">
           <h2>Enter Reset Code</h2>
           <form onSubmit={handleSubmit}>
-            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", margin: 0 }}>
+            <p
+              style={{
+                fontSize: "0.9rem",
+                color: "var(--text-secondary)",
+                margin: 0,
+              }}
+            >
               A code was sent to <strong>{email}</strong>
             </p>
 
@@ -187,7 +193,10 @@ const PasswordReset = () => {
           <p className="success-message">
             Your password has been reset successfully.
           </p>
-          <button className="form-submit" onClick={() => navigate("/auth/login")}>
+          <button
+            className="form-submit"
+            onClick={() => navigate("/auth/login")}
+          >
             Back to Login
           </button>
         </div>
